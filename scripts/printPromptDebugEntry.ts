@@ -7,6 +7,7 @@ import { ChatMessage } from "@/types/message";
 import { initializeBuiltinTools } from "@/tools/builtinTools";
 import { getSettings } from "@/settings/model";
 import { UserMemoryManager } from "@/memory/UserMemoryManager";
+import { logInfo, logError } from "@/logger";
 import type { App } from "obsidian";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 
@@ -91,7 +92,7 @@ export async function run(args: string[]): Promise<void> {
   const userInput = args.join(" ").trim();
 
   if (!userInput) {
-    console.error('Usage: npm run prompt:debug -- "your message here"');
+    logError('Usage: pnpm run prompt:debug -- "your message here"');
     process.exitCode = 1;
     return;
   }
@@ -130,5 +131,5 @@ export async function run(args: string[]): Promise<void> {
     userMessage: buildChatMessage(userInput),
   });
 
-  console.log(report.annotatedPrompt);
+  logInfo(report.annotatedPrompt);
 }
