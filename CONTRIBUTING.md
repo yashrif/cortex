@@ -47,8 +47,8 @@ In the case of Copilot for Obsidian, you will need to:
 4. Run `pnpm install` to install all dependencies.
 5. Install the recommended VS Code extensions (Prettier and ESLint).
 6. Ensure your editor respects the `.editorconfig` and Prettier settings.
-7. Run `pnpm run dev` in your repo to see the effect of your changes.
-8. Before committing, run `pnpm run format` to ensure all files are properly formatted.
+7. Run `pnpm run build` in your repo to verify your changes.
+8. Before opening a PR, run `pnpm run format && pnpm run lint`.
 9. When you are ready to make a pull request, ensure to make your changes in **a branch on your fork**, and then submit a pull request to the **main repo**.
 
 Try to be descriptive in your branch names and pull requests. Happy coding!
