@@ -4,7 +4,7 @@ This file provides guidance to any coding agent when working with code in this r
 
 ## Overview
 
-Copilot for Obsidian is an AI-powered assistant plugin that integrates various LLM providers (OpenAI, Anthropic, Google, etc.) with Obsidian. It provides chat interfaces, autocomplete, semantic search, and various AI-powered commands for note-taking and knowledge management.
+Cortex for Obsidian is an AI-powered assistant plugin that integrates various LLM providers (OpenAI, Anthropic, Google, etc.) with Obsidian. It provides chat interfaces, autocomplete, semantic search, and various AI-powered commands for note-taking and knowledge management.
 
 ## Development Commands
 
@@ -12,7 +12,7 @@ Copilot for Obsidian is an AI-powered assistant plugin that integrates various L
 
 - **NEVER RUN `pnpm run dev`** - The user will handle all builds manually
 - `pnpm run build` - Production build (TypeScript check + minified output)
-- `pnpm run test:vault` - macOS only. Installs deps, builds, symlinks `main.js` / `manifest.json` / `styles.css` from the current worktree into `$COPILOT_TEST_VAULT_PATH/.obsidian/plugins/copilot/`, then reloads the plugin via the Obsidian CLI. Requires the user-level env var `COPILOT_TEST_VAULT_PATH` to be set to a vault that has been opened in Obsidian at least once. Use this when the user asks you to load the plugin into their test vault — it replaces manual build + copy + reload.
+- `pnpm run test:vault` - macOS only. Installs deps, builds, symlinks `main.js` / `manifest.json` / `styles.css` from the current worktree into `$CORTEX_TEST_VAULT_PATH/.obsidian/plugins/cortex/`, then reloads the plugin via the Obsidian CLI. Requires the user-level env var `CORTEX_TEST_VAULT_PATH` to be set to a vault that has been opened in Obsidian at least once. Use this when the user asks you to load the plugin into their test vault — it replaces manual build + copy + reload.
 
 ### Code Quality
 
@@ -39,7 +39,7 @@ The Obsidian desktop app includes a CLI for plugin development. Use the full pat
 **Plugin reload** (after `pnpm run build`):
 
 ```bash
-/Applications/Obsidian.app/Contents/MacOS/obsidian plugin:reload id=copilot
+/Applications/Obsidian.app/Contents/MacOS/obsidian plugin:reload id=cortex
 ```
 
 **Console debugging** (requires attaching debugger first):
@@ -56,7 +56,7 @@ The Obsidian desktop app includes a CLI for plugin development. Use the full pat
 - `dev:dom selector=<css>` — Query DOM elements
 - `dev:screenshot path=<file>` — Take a screenshot
 - `eval code=<js>` — Execute JS in the app context
-- `plugin:disable id=copilot` / `plugin:enable id=copilot`
+- `plugin:disable id=cortex` / `plugin:enable id=cortex`
 
 Run `obsidian help` for the full command list.
 
@@ -73,7 +73,7 @@ Run `obsidian help` for the full command list.
 
 2. **Chain Factory Pattern** (`src/chainFactory.ts`)
 
-   - Different chain types for various AI operations (chat, copilot, adhoc prompts)
+   - Different chain types for various AI operations (chat, cortex, adhoc prompts)
    - LangChain integration for complex workflows
    - Memory management for conversation context
    - Tool integration (search, file operations, time queries)
@@ -369,7 +369,7 @@ return () => doc.removeEventListener("keydown", handler);
 
 Do **not** rely on `activeDocument` at registration _and_ removal — it can shift between the two calls if focus moves.
 
-**View migrated to a new window:** for a view that owns React or other long-lived renderers, register `this.containerEl.onWindowMigrated((win) => { ... })` in `onOpen`. The callback fires when Obsidian reparents the element into a different window's document. Tear down and rebuild the renderer there so it captures the new window. Save the returned destroy function and call it in `onClose` to avoid leaks. `CopilotView` is the canonical example — it unmounts and recreates the React root on migration so Lexical re-binds to the popout's window.
+**View migrated to a new window:** for a view that owns React or other long-lived renderers, register `this.containerEl.onWindowMigrated((win) => { ... })` in `onOpen`. The callback fires when Obsidian reparents the element into a different window's document. Tear down and rebuild the renderer there so it captures the new window. Save the returned destroy function and call it in `onClose` to avoid leaks. `CortexView` is the canonical example — it unmounts and recreates the React root on migration so Lexical re-binds to the popout's window.
 
 **Cross-realm `instanceof`:** popout windows have their own `Element`, `MouseEvent`, etc., so standard `instanceof` checks fail across windows. Use Obsidian's `element.instanceOf(HTMLElement)` and `event.instanceOf(MouseEvent)` when checking type across realms.
 
@@ -381,7 +381,7 @@ Do **not** rely on `activeDocument` at registration _and_ removal — it can shi
 - **Clean Architecture**: New architecture follows Repository → Manager → UIState → UI pattern
 - **Single Source of Truth**: All messages stored once in MessageRepository with computed views
 - **Context Always Fresh**: Context is reprocessed when messages are edited to ensure accuracy
-- **Chat History Loading**: Uses pending message mechanism through CopilotView → Chat component props
+- **Chat History Loading**: Uses pending message mechanism through CortexView → Chat component props
 - **Project Chat Isolation**: Each project now has completely isolated chat history
   - Automatic detection of project switches via `ProjectManager.getCurrentProjectId()`
   - Separate MessageRepository instances per project ID

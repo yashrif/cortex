@@ -5,7 +5,7 @@ import { BUILTIN_CHAT_MODELS, BUILTIN_EMBEDDING_MODELS } from "@/constants";
 import EmbeddingManager from "@/LLMProviders/embeddingManager";
 import ProjectManager from "@/LLMProviders/projectManager";
 import { logError } from "@/logger";
-import { CopilotSettings, setSettings, updateSetting, useSettingsValue } from "@/settings/model";
+import { CortexSettings, setSettings, updateSetting, useSettingsValue } from "@/settings/model";
 import { ModelAddDialog } from "@/settings/v2/components/ModelAddDialog";
 import { ModelEditModal } from "@/settings/v2/components/ModelEditDialog";
 import { ModelTable } from "@/settings/v2/components/ModelTable";
@@ -34,7 +34,7 @@ export const ModelSettings: React.FC = () => {
       name: `${model.name} (copy)`,
     };
 
-    const settingField: keyof CopilotSettings = isEmbeddingModel
+    const settingField: keyof CortexSettings = isEmbeddingModel
       ? "activeEmbeddingModels"
       : "activeModels";
 
@@ -42,7 +42,7 @@ export const ModelSettings: React.FC = () => {
   };
 
   const handleModelReorder = (newModels: CustomModel[], isEmbeddingModel: boolean = false) => {
-    const settingField: keyof CopilotSettings = isEmbeddingModel
+    const settingField: keyof CortexSettings = isEmbeddingModel
       ? "activeEmbeddingModels"
       : "activeModels";
     updateSetting(settingField, newModels);
@@ -73,7 +73,7 @@ export const ModelSettings: React.FC = () => {
     originalModel: CustomModel,
     updatedModel: CustomModel
   ) => {
-    const settingField: keyof CopilotSettings = isEmbeddingModel
+    const settingField: keyof CortexSettings = isEmbeddingModel
       ? "activeEmbeddingModels"
       : "activeModels";
 

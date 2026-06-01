@@ -1,6 +1,6 @@
-import CopilotView from "@/components/CopilotView";
+import CortexView from "@/components/CortexView";
 import { CHAT_VIEWTYPE } from "@/constants";
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { getSettings } from "@/settings/model";
 import { logInfo, logError } from "@/logger";
 import { App, Notice, PluginSettingTab } from "obsidian";
@@ -8,17 +8,17 @@ import React from "react";
 import SettingsMainV2 from "@/settings/v2/SettingsMainV2";
 import { createPluginRoot } from "@/utils/react/createPluginRoot";
 
-export class CopilotSettingTab extends PluginSettingTab {
-  plugin: CopilotPlugin;
+export class CortexSettingTab extends PluginSettingTab {
+  plugin: CortexPlugin;
 
-  constructor(app: App, plugin: CopilotPlugin) {
+  constructor(app: App, plugin: CortexPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
 
   async reloadPlugin() {
     try {
-      const chatView = this.app.workspace.getLeavesOfType(CHAT_VIEWTYPE)[0]?.view as CopilotView;
+      const chatView = this.app.workspace.getLeavesOfType(CHAT_VIEWTYPE)[0]?.view as CortexView;
 
       // Analyze chat messages for memory if enabled
       if (chatView && getSettings().enableRecentConversations) {
@@ -49,10 +49,10 @@ export class CopilotSettingTab extends PluginSettingTab {
         };
         setting: { openTabById: (id: string) => { display: () => void } };
       };
-      await app.plugins.disablePlugin("copilot");
-      await app.plugins.enablePlugin("copilot");
+      await app.plugins.disablePlugin("cortex");
+      await app.plugins.enablePlugin("cortex");
 
-      app.setting.openTabById("copilot").display();
+      app.setting.openTabById("cortex").display();
       new Notice("Plugin reloaded successfully.");
     } catch (error) {
       new Notice("Failed to reload the plugin. Please reload manually.");

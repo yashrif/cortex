@@ -61,7 +61,7 @@ import { MessageRepository } from "./MessageRepository";
 import { ContextManager } from "./ContextManager";
 import type ChainManager from "@/LLMProviders/chainManager";
 import type { FileParserManager } from "@/tools/FileParserManager";
-import type CopilotPlugin from "@/main";
+import type CortexPlugin from "@/main";
 import { ChainType } from "@/chainType";
 import { getWebViewerService } from "@/services/webViewerService/webViewerServiceSingleton";
 import { ChatMessage, MessageContext } from "@/types/message";
@@ -158,7 +158,7 @@ describe("ChatManager", () => {
       mockMessageRepo,
       mockChainManager as unknown as ChainManager,
       mockFileParserManager as FileParserManager,
-      mockPlugin as unknown as CopilotPlugin
+      mockPlugin as unknown as CortexPlugin
     );
   });
 

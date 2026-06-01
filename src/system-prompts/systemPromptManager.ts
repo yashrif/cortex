@@ -19,9 +19,9 @@ import {
   setSelectedPromptTitle,
 } from "@/system-prompts/state";
 import {
-  COPILOT_SYSTEM_PROMPT_CREATED,
-  COPILOT_SYSTEM_PROMPT_MODIFIED,
-  COPILOT_SYSTEM_PROMPT_LAST_USED,
+  CORTEX_SYSTEM_PROMPT_CREATED,
+  CORTEX_SYSTEM_PROMPT_MODIFIED,
+  CORTEX_SYSTEM_PROMPT_LAST_USED,
 } from "@/system-prompts/constants";
 import { logInfo } from "@/logger";
 import { ensureFolderExists } from "@/utils";
@@ -149,9 +149,9 @@ export class SystemPromptManager {
         // Update frontmatter - write back ALL fields since vault.modify clears frontmatter
         // Reference: Command module writes all fields in processFrontMatter
         await app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
-          frontmatter[COPILOT_SYSTEM_PROMPT_CREATED] = newPrompt.createdMs;
-          frontmatter[COPILOT_SYSTEM_PROMPT_MODIFIED] = newPrompt.modifiedMs;
-          frontmatter[COPILOT_SYSTEM_PROMPT_LAST_USED] = newPrompt.lastUsedMs;
+          frontmatter[CORTEX_SYSTEM_PROMPT_CREATED] = newPrompt.createdMs;
+          frontmatter[CORTEX_SYSTEM_PROMPT_MODIFIED] = newPrompt.modifiedMs;
+          frontmatter[CORTEX_SYSTEM_PROMPT_LAST_USED] = newPrompt.lastUsedMs;
         });
       }
 

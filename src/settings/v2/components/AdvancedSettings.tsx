@@ -17,7 +17,7 @@ import {
 import { hasPersistedSecrets, isKeychainOnly } from "@/services/settingsSecretTransforms";
 import { logError } from "@/logger";
 import {
-  type CopilotSettings,
+  type CortexSettings,
   setSettings,
   updateSetting,
   useSettingsValue,
@@ -31,23 +31,23 @@ import { getPromptFilePath, SystemPromptAddModal } from "@/system-prompts";
 import { useSystemPrompts } from "@/system-prompts/state";
 
 /**
- * Returns a `saveData` callback bound to the loaded Copilot plugin instance.
+ * Returns a `saveData` callback bound to the loaded Cortex plugin instance.
  *
  * Reason: settings React components don't have direct access to the plugin,
  * so persistence transactions look it up via the Obsidian `App`. Kept as a
  * single helper to centralise the `app.plugins` cast (untyped in the Obsidian
  * API) and the "plugin not found" guard at every call site.
  */
-function getCopilotSaveData(app: App): (data: CopilotSettings) => Promise<void> {
-  return async (data: CopilotSettings) => {
+function getCortexSaveData(app: App): (data: CortexSettings) => Promise<void> {
+  return async (data: CortexSettings) => {
     const { plugins } = app as unknown as {
       plugins: {
-        getPlugin: (id: string) => { saveData: (data: CopilotSettings) => Promise<void> } | null;
+        getPlugin: (id: string) => { saveData: (data: CortexSettings) => Promise<void> } | null;
       };
     };
-    const copilotPlugin = plugins.getPlugin("copilot");
-    if (!copilotPlugin) throw new Error("Copilot plugin not found");
-    await copilotPlugin.saveData(data);
+    const cortexPlugin = plugins.getPlugin("cortex");
+    if (!cortexPlugin) throw new Error("Cortex plugin not found");
+    await cortexPlugin.saveData(data);
   };
 }
 
@@ -141,7 +141,7 @@ export const AdvancedSettings: React.FC = () => {
     setForgetting(true);
     try {
       const keychain = KeychainService.getInstance();
-      const saveData = getCopilotSaveData(app);
+      const saveData = getCortexSaveData(app);
 
       // Reason: run inside the persistence queue to prevent interleaving
       // with normal saves that could restore old secrets.
@@ -151,7 +151,7 @@ export const AdvancedSettings: React.FC = () => {
           saveData,
           refreshDiskHasSecrets,
           (nextSettings) => {
-            refreshLastPersistedSettings(nextSettings as CopilotSettings);
+            refreshLastPersistedSettings(nextSettings as CortexSettings);
             if (!skipSuppress) {
               suppressNextPersistOnce();
             }
@@ -200,7 +200,7 @@ export const AdvancedSettings: React.FC = () => {
 
     setMigrating(true);
     try {
-      const saveData = getCopilotSaveData(app);
+      const saveData = getCortexSaveData(app);
       // Reason: migrateDiskSecretsToKeychain owns the full transaction —
       // write keychain, strip disk, flip _keychainOnly, with rollback on
       // partial failure. Returns the list of legacy enc_* fields that could
@@ -434,7 +434,7 @@ export const AdvancedSettings: React.FC = () => {
         <SettingItem
           type="custom"
           title="Create Log File"
-          description={`Open the Copilot log file (${logFileManager.getLogPath()}) for easy sharing when reporting issues.`}
+          description={`Open the Cortex log file (${logFileManager.getLogPath()}) for easy sharing when reporting issues.`}
         >
           <Button
             variant="secondary"

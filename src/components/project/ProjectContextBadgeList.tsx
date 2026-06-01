@@ -221,7 +221,7 @@ export const ProjectContextBadgeList: React.FC<ProjectContextBadgeListProps> = (
 
         {/* Gradient fade mask when truncated */}
         {isTruncated && (
-          <div className="copilot-fade-mask-bottom tw-pointer-events-none tw-absolute tw-inset-x-0 tw-bottom-0 tw-h-10 tw-rounded-b-md" />
+          <div className="cortex-fade-mask-bottom tw-pointer-events-none tw-absolute tw-inset-x-0 tw-bottom-0 tw-h-10 tw-rounded-b-md" />
         )}
       </div>
 

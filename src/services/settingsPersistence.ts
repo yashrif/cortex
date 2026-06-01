@@ -25,7 +25,7 @@
  *   sides, and it does so as a single transaction.
  */
 
-import { type CopilotSettings, getSettings, sanitizeSettings, setSettings } from "@/settings/model";
+import { type CortexSettings, getSettings, sanitizeSettings, setSettings } from "@/settings/model";
 import { getDecryptedKey, hasEncryptionPrefix } from "@/encryptionService";
 import { KeychainService, isSecretKey } from "@/services/keychainService";
 import {
@@ -66,7 +66,7 @@ let diskHasSecrets = false;
  * Settings snapshot from the last successful `saveData()` call. Used as the
  * keychain-diff baseline so rollback restores the previous known-good state.
  */
-let lastPersistedSettings: CopilotSettings | undefined;
+let lastPersistedSettings: CortexSettings | undefined;
 
 /**
  * When true, the next `persistSettings()` call is skipped.
@@ -110,7 +110,7 @@ function isValidKeychainVaultId(value: unknown): value is string {
 // ---------------------------------------------------------------------------
 
 /** Refresh the cached disk-secret presence after a successful save/load. */
-export function refreshDiskHasSecrets(data: CopilotSettings): void {
+export function refreshDiskHasSecrets(data: CortexSettings): void {
   diskHasSecrets = hasPersistedSecrets(data as unknown as Record<string, unknown>);
 }
 
@@ -139,7 +139,7 @@ export function resetPersistenceState(): void {
  * Refresh the last known-good settings baseline used by keychain rollback.
  * Called by dedicated transactions that bypass `doPersist()`.
  */
-export function refreshLastPersistedSettings(data: CopilotSettings): void {
+export function refreshLastPersistedSettings(data: CortexSettings): void {
   lastPersistedSettings = structuredClone(data);
 }
 
@@ -168,7 +168,7 @@ export function hasDiskSecretsToMigrate(): boolean {
  * - Not already in keychain-only mode
  * - data.json still has secrets to clear
  */
-export function canClearDiskSecrets(settings: CopilotSettings): boolean {
+export function canClearDiskSecrets(settings: CortexSettings): boolean {
   const keychain = KeychainService.getInstance();
   if (!keychain.isAvailable()) return false;
   if (persistHadUndecryptableSecrets) return false;
@@ -235,7 +235,7 @@ export async function flushPersistence(): Promise<void> {
  * Reason: legacy users may still have `enc_*` ciphertext in data.json. Without
  * decryption, ciphertext would flow into provider requests.
  */
-async function loadSecretsFromDisk(settings: CopilotSettings): Promise<CopilotSettings> {
+async function loadSecretsFromDisk(settings: CortexSettings): Promise<CortexSettings> {
   const hydrated = structuredClone(settings);
   const rec = hydrated as unknown as Record<string, unknown>;
 
@@ -273,7 +273,7 @@ async function loadSecretsFromDisk(settings: CopilotSettings): Promise<CopilotSe
  * Boundary: read-only against the keychain. Never falls back to disk; if the
  * keychain is empty, fields stay empty (the keychain-only contract).
  */
-async function loadSecretsFromKeychain(settings: CopilotSettings): Promise<CopilotSettings> {
+async function loadSecretsFromKeychain(settings: CortexSettings): Promise<CortexSettings> {
   // Reason: in keychain-only mode, settings as loaded from disk should already
   // be stripped. Start from a stripped baseline so any stale disk values that
   // crept in (e.g. via cross-version sync) cannot bleed into runtime memory.
@@ -308,14 +308,14 @@ async function loadSecretsFromKeychain(settings: CopilotSettings): Promise<Copil
  */
 export async function loadSettingsWithKeychain(
   rawData: unknown,
-  saveData: (data: CopilotSettings) => Promise<void>
-): Promise<CopilotSettings> {
+  saveData: (data: CortexSettings) => Promise<void>
+): Promise<CortexSettings> {
   // Reason: capture fresh-install state BEFORE we start mutating anything.
   // Obsidian's loadData() returns null when data.json doesn't exist yet.
   const isFreshInstall = rawData == null;
 
   // Reason: sanitize FIRST to normalise model providers (e.g. azure_openai → azure-openai).
-  let settings = sanitizeSettings(rawData as CopilotSettings);
+  let settings = sanitizeSettings(rawData as CortexSettings);
 
   // Snapshot raw disk state so the cached `diskHasSecrets` flag is accurate
   // regardless of any downstream cleanup that happens to `settings`.
@@ -400,7 +400,7 @@ export async function loadSettingsWithKeychain(
       if (isFreshInstall) {
         currentDisk._keychainOnly = true;
       }
-      await saveData(currentDisk as unknown as CopilotSettings);
+      await saveData(currentDisk as unknown as CortexSettings);
       rawDiskData = currentDisk;
       diskHasSecrets = hasPersistedSecrets(rawDiskData);
     } catch (error) {
@@ -447,8 +447,8 @@ export async function loadSettingsWithKeychain(
  * requirement.
  */
 async function persistSecretsToDisk(
-  settings: CopilotSettings,
-  saveData: (data: CopilotSettings) => Promise<void>
+  settings: CortexSettings,
+  saveData: (data: CortexSettings) => Promise<void>
 ): Promise<void> {
   const cleaned = cleanupLegacyFields(settings);
   await saveData(cleaned);
@@ -480,9 +480,9 @@ async function persistSecretsToDisk(
  * is responsible for providing the previous settings via `prev`.
  */
 async function persistSecretsToKeychain(
-  settings: CopilotSettings,
-  saveData: (data: CopilotSettings) => Promise<void>,
-  prev: CopilotSettings | undefined
+  settings: CortexSettings,
+  saveData: (data: CortexSettings) => Promise<void>,
+  prev: CortexSettings | undefined
 ): Promise<void> {
   const keychain = KeychainService.getInstance();
   const cleaned = cleanupLegacyFields(settings);
@@ -624,7 +624,7 @@ async function persistSecretsToKeychain(
 //
 // Keep the clear-and-report flow. If a future review flags this again, point
 // them at this note.
-function collectUndecryptableFields(settings: CopilotSettings): string[] {
+function collectUndecryptableFields(settings: CortexSettings): string[] {
   const fields: string[] = [];
   const rec = settings as unknown as Record<string, unknown>;
 
@@ -660,7 +660,7 @@ function collectUndecryptableFields(settings: CopilotSettings): string[] {
  *
  * Companion to `collectUndecryptableFields()` — they walk the same fields.
  */
-function clearUndecryptableSecrets(settings: CopilotSettings): CopilotSettings {
+function clearUndecryptableSecrets(settings: CortexSettings): CortexSettings {
   const out = structuredClone(settings);
   const rec = out as unknown as Record<string, unknown>;
 
@@ -719,7 +719,7 @@ export interface MigrationResult {
  *   `fieldsRequiringReentry` may still be non-empty; the caller surfaces it.
  */
 export async function migrateDiskSecretsToKeychain(
-  saveData: (data: CopilotSettings) => Promise<void>
+  saveData: (data: CortexSettings) => Promise<void>
 ): Promise<MigrationResult> {
   const result: MigrationResult = { fieldsRequiringReentry: [] };
 
@@ -762,7 +762,7 @@ export async function migrateDiskSecretsToKeychain(
     // branch (snapshot the real keychain baseline / tombstone the IDs this call
     // wrote) is complexity not justified by dormant, self-healing residue.
     // If a future review flags this again, point them at this note.
-    const target = { ...sanitized, _keychainOnly: true } as CopilotSettings;
+    const target = { ...sanitized, _keychainOnly: true } as CortexSettings;
     await persistSecretsToKeychain(target, saveData, current);
 
     // Step 3: reconcile with any concurrent settings edits that landed
@@ -782,7 +782,7 @@ export async function migrateDiskSecretsToKeychain(
     // both reflect the final merged state.
     const fresh = getSettings();
     const sanitizedFresh = clearUndecryptableSecrets(fresh);
-    const merged = { ...sanitizedFresh, _keychainOnly: true } as CopilotSettings;
+    const merged = { ...sanitizedFresh, _keychainOnly: true } as CortexSettings;
 
     // DESIGN NOTE — JSON.stringify is intentionally used here despite being
     // property-order-sensitive. This comparison only runs once per migration,
@@ -840,9 +840,9 @@ export const clearDiskSecrets = migrateDiskSecretsToKeychain;
  * dedicated transactions, then dispatches to disk or keychain mode.
  */
 export async function persistSettings(
-  settings: CopilotSettings,
-  saveData: (data: CopilotSettings) => Promise<void>,
-  prevSettings?: CopilotSettings
+  settings: CortexSettings,
+  saveData: (data: CortexSettings) => Promise<void>,
+  prevSettings?: CortexSettings
 ): Promise<void> {
   if (suppressNextPersist) {
     suppressNextPersist = false;
@@ -865,9 +865,9 @@ export async function persistSettings(
 
 /** Core persistence dispatcher, executed inside the write queue. */
 async function doPersist(
-  settings: CopilotSettings,
-  saveData: (data: CopilotSettings) => Promise<void>,
-  prevSettings?: CopilotSettings
+  settings: CortexSettings,
+  saveData: (data: CortexSettings) => Promise<void>,
+  prevSettings?: CortexSettings
 ): Promise<void> {
   const keychain = KeychainService.getInstance();
 
@@ -944,8 +944,8 @@ async function doPersist(
 // note and at the resolved GitHub thread on PR #2364.
 async function restoreKeychainFromSettings(
   keychain: KeychainService,
-  restoreFrom: CopilotSettings | undefined,
-  failedSettings: CopilotSettings
+  restoreFrom: CortexSettings | undefined,
+  failedSettings: CortexSettings
 ): Promise<boolean> {
   // Reason: no baseline → we cannot prove the keychain matches a known-good
   // state. Treat as unsafe so the lock stays closed.

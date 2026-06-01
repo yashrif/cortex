@@ -91,7 +91,7 @@ export class ContextManager {
       // 2. Build L2 context from previous turns (uses stored envelope content, preserves compaction)
       const { l2Context, l2Paths } = this.buildL2ContextFromPreviousTurns(message.id!, messageRepo);
 
-      // 3. Extract URLs and process them (for Copilot Plus chain)
+      // 3. Extract URLs and process them (for Cortex Plus chain)
       const contextUrls = message.context?.urls || [];
       const urlContextAddition =
         chainType === ChainType.COPILOT_PLUS_CHAIN

@@ -1,6 +1,6 @@
-# Contributing to Copilot for Obsidian
+# Contributing to Cortex for Obsidian
 
-First off, thank you for considering contributing to Copilot for Obsidian! It's people like you who make Copilot for Obsidian such a great tool!
+First off, thank you for considering contributing to Cortex for Obsidian! It's people like you who make Cortex for Obsidian such a great tool!
 
 ## How Can I Contribute?
 
@@ -17,16 +17,16 @@ Before submitting a bug report or suggestion, please check the [issues](https://
 
 ### Your First Code Contribution
 
-Unsure where to begin contributing to Copilot for Obsidian? You can start by looking through the `help-wanted` issues.
+Unsure where to begin contributing to Cortex for Obsidian? You can start by looking through the `help-wanted` issues.
 
 ### Pull Requests
 
 The process described here aims to:
 
-- Maintain the quality of Copilot for Obsidian.
+- Maintain the quality of Cortex for Obsidian.
 - Fix problems that are important to users.
-- Engage the community in working towards the best possible Copilot for Obsidian.
-- Enable a sustainable system for Copilot for Obsidian's maintainers to review contributions.
+- Engage the community in working towards the best possible Cortex for Obsidian.
+- Enable a sustainable system for Cortex for Obsidian's maintainers to review contributions.
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -39,7 +39,7 @@ Please follow these steps to have your contribution considered by the maintainer
 
 Here is a great [writeup by Daniel Haven](https://medium.com/gitconnected/how-to-set-up-the-ideal-obsidian-plugin-development-workflow-b222fe72280f) on the best practices for setting up your dev environment for Obsidian plugins.
 
-In the case of Copilot for Obsidian, you will need to:
+In the case of Cortex for Obsidian, you will need to:
 
 1. Fork the repo.
 2. Create a vault just for development.
@@ -55,7 +55,7 @@ Try to be descriptive in your branch names and pull requests. Happy coding!
 
 #### Fast Iteration with `pnpm run test:vault` (macOS)
 
-If you work across multiple worktrees or just want one command to build and load the plugin into a test vault, use `pnpm run test:vault`. It runs `pnpm install`, builds, symlinks `main.js` / `manifest.json` / `styles.css` from the worktree into the vault's `.obsidian/plugins/copilot/` folder, and reloads the plugin in Obsidian via its CLI.
+If you work across multiple worktrees or just want one command to build and load the plugin into a test vault, use `pnpm run test:vault`. It runs `pnpm install`, builds, symlinks `main.js` / `manifest.json` / `styles.css` from the worktree into the vault's `.obsidian/plugins/cortex/` folder, and reloads the plugin in Obsidian via its CLI.
 
 **One-time setup:**
 
@@ -64,7 +64,7 @@ If you work across multiple worktrees or just want one command to build and load
 3. Set an env var pointing at the vault path. Add this to `~/.zshrc`, `~/.bashrc`, or `~/.config/fish/config.fish`:
 
    ```bash
-   export COPILOT_TEST_VAULT_PATH="$HOME/Obsidian/CopilotTestVault"
+   export CORTEX_TEST_VAULT_PATH="$HOME/Obsidian/CortexTestVault"
    ```
 
 **Per change:**
@@ -147,7 +147,7 @@ The most basic ones are model changes and mode changes.
 
 ### Vault QA / Plus mode (with a small test vault)
 
-- Use the "Refresh index" button and see if it properly starts indexing. If it says "index is up-to-date", use "Clear Copilot index" and start indexing again (or equivalently, use "force re-index" command).
+- Use the "Refresh index" button and see if it properly starts indexing. If it says "index is up-to-date", use "Clear Cortex index" and start indexing again (or equivalently, use "force re-index" command).
 - Check if there's any error or warning during indexing in the console, and if the exclusions and inclusions are shown correctly in the notice banner. Click pause and resume.
 - After indexing is successful, ask a specific question where the answer is in your docs. For example, two of my docs are a biography of a person named "Mike", I ask "who is mike" and it should be able to answer using the two docs.
   - In Plus mode make sure you trigger this query with `@vault` or cmd/ctrl + shift + enter. And then check "Show Sources" button for the expected docs.
@@ -170,7 +170,7 @@ The most basic ones are model changes and mode changes.
 - Switch the embedding model and click "refresh index" to see if it starts from scratch (it should detect that the existing index has a different type of embedding, and hence start indexing from scratch).
 - Any behaviors related to the settings that you added, updated or may have affected.
 
-### Copilot Commands
+### Cortex Commands
 
 - Select text in a note and apply a built-in one like "translation" or a custom one you have as Custom Prompts.
 - Any commands that you added, updated or may have affected.
@@ -179,7 +179,7 @@ The most basic ones are model changes and mode changes.
 
 ## Getting Help
 
-- **Discord**: [Join](https://discord.gg/bFtfKDQqZt) the server for Copilot dev discussions.
+- **Discord**: [Join](https://discord.gg/bFtfKDQqZt) the server for Cortex dev discussions.
 - **Email**: logan@brevilabs.com
 
-Thank you for contributing to Copilot for Obsidian!
+Thank you for contributing to Cortex for Obsidian!

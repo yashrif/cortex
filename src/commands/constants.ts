@@ -12,11 +12,11 @@ export const EMPTY_COMMAND: CustomCommand = {
 };
 
 // Custom command frontmatter property constants
-export const COPILOT_COMMAND_CONTEXT_MENU_ENABLED = "copilot-command-context-menu-enabled";
-export const COPILOT_COMMAND_SLASH_ENABLED = "copilot-command-slash-enabled";
-export const COPILOT_COMMAND_CONTEXT_MENU_ORDER = "copilot-command-context-menu-order";
-export const COPILOT_COMMAND_MODEL_KEY = "copilot-command-model-key";
-export const COPILOT_COMMAND_LAST_USED = "copilot-command-last-used";
+export const CORTEX_COMMAND_CONTEXT_MENU_ENABLED = "cortex-command-context-menu-enabled";
+export const CORTEX_COMMAND_SLASH_ENABLED = "cortex-command-slash-enabled";
+export const CORTEX_COMMAND_CONTEXT_MENU_ORDER = "cortex-command-context-menu-order";
+export const CORTEX_COMMAND_MODEL_KEY = "cortex-command-model-key";
+export const CORTEX_COMMAND_LAST_USED = "cortex-command-last-used";
 export const DEFAULT_COMMANDS: CustomCommand[] = [
   {
     title: "Fix grammar and spelling",

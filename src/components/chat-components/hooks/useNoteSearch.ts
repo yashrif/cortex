@@ -32,7 +32,7 @@ const DEFAULT_CONFIG: Required<NoteSearchConfig> = {
  * Searches only by note name (basename), never by path, to avoid confusion.
  *
  * @param query - Search query string
- * @param isCopilotPlus - Whether Copilot Plus features are enabled (includes PDFs)
+ * @param isCopilotPlus - Whether Cortex Plus features are enabled (includes PDFs)
  * @param config - Optional configuration for search behavior
  * @param currentActiveFile - Current active file to show as "Active Note" option
  * @returns Array of NoteSearchOption objects matching the query by name

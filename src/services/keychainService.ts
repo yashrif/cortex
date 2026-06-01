@@ -1,5 +1,5 @@
 import { type App, type SecretStorage, FileSystemAdapter } from "obsidian";
-import { type CopilotSettings, getModelKeyFromModel, getSettings } from "@/settings/model";
+import { type CortexSettings, getModelKeyFromModel, getSettings } from "@/settings/model";
 import { type CustomModel } from "@/aiParams";
 import { isSensitiveKey } from "@/encryptionService";
 import {
@@ -131,7 +131,7 @@ function normalizeKeychainId(raw: string, maxLength = MAX_SECRET_ID_LENGTH): str
 
 /**
  * Convert a camelCase settings key to a vault-namespaced kebab-case keychain ID.
- * Format: `copilot-v{8hex}-{kebab-key}`, capped at 64 chars.
+ * Format: `cortex-v{8hex}-{kebab-key}`, capped at 64 chars.
  *
  * Reason: top-level settings keys are short (e.g. "openAIApiKey" → 22 chars total),
  * so truncation is extremely unlikely, but we enforce the cap defensively.
@@ -145,7 +145,7 @@ function normalizeKeychainId(raw: string, maxLength = MAX_SECRET_ID_LENGTH): str
  * is added to EXTRA_SECRET_KEYS, revisit. Point future reviewers here.
  */
 function toKeychainId(vaultId: string, settingsKey: string): string {
-  const prefix = `copilot-v${vaultId}-`;
+  const prefix = `cortex-v${vaultId}-`;
   const kebab = settingsKey
     .replace(/([A-Z])/g, "-$1")
     .toLowerCase()
@@ -159,7 +159,7 @@ function toKeychainId(vaultId: string, settingsKey: string): string {
 
 /**
  * Build a keychain ID for a model-level secret.
- * Format: `copilot-v{8hex}-model-{field}-{scope}-{normalized}`
+ * Format: `cortex-v{8hex}-model-{field}-{scope}-{normalized}`
  *
  * Reason: the fixed prefix consumes up to ~28 chars, so `normalizeKeychainId`
  * receives the remaining budget to stay within the 64-char SecretStorage limit.
@@ -176,7 +176,7 @@ function toModelKeychainId(
   // e.g. "apiKey" → "api-key"
   const kebabField = field.replace(/([A-Z])/g, "-$1").toLowerCase();
   const fieldSegment = `model-${kebabField}`;
-  const prefix = `copilot-v${vaultId}-${fieldSegment}-${scope}-`;
+  const prefix = `cortex-v${vaultId}-${fieldSegment}-${scope}-`;
   const budget = MAX_SECRET_ID_LENGTH - prefix.length;
   const normalizedModel = normalizeKeychainId(modelIdentity, budget);
   return prefix + normalizedModel;
@@ -184,7 +184,7 @@ function toModelKeychainId(
 
 /** Result of a keychain-only hydrate pass. */
 export interface HydrateResult {
-  settings: CopilotSettings;
+  settings: CortexSettings;
   /** True if any keychain read failed — caller may need to fall back to disk. */
   hadFailures: boolean;
 }
@@ -198,7 +198,7 @@ export interface PersistSecretsResult {
 }
 
 /** Callback type for Obsidian's saveData. */
-export type SaveDataFn = (data: CopilotSettings) => Promise<void>;
+export type SaveDataFn = (data: CortexSettings) => Promise<void>;
 
 /**
  * Singleton service for reading/writing secrets via Obsidian's SecretStorage (OS Keychain).
@@ -351,7 +351,7 @@ export class KeychainService {
    * @returns Updated settings with secrets hydrated from the keychain, plus
    *   whether any keychain read threw (so the caller can surface a warning).
    */
-  async hydrateFromKeychain(settings: CopilotSettings): Promise<HydrateResult> {
+  async hydrateFromKeychain(settings: CortexSettings): Promise<HydrateResult> {
     const hydrated = { ...settings };
     let hadFailures = false;
 
@@ -418,7 +418,7 @@ export class KeychainService {
    * Returns entries to write to keychain and IDs to clean up.
    * Does NOT modify the settings object.
    */
-  persistSecrets(settings: CopilotSettings, prevSettings?: CopilotSettings): PersistSecretsResult {
+  persistSecrets(settings: CortexSettings, prevSettings?: CortexSettings): PersistSecretsResult {
     const secretEntries: Array<[string, string]> = [];
     const clearedSecretIds: string[] = [];
 
@@ -485,7 +485,7 @@ export class KeychainService {
    * (set by the caller after this method succeeds).
    */
   clearAllVaultSecrets(): void {
-    const vaultPrefix = `copilot-v${this.vaultId}-`;
+    const vaultPrefix = `cortex-v${this.vaultId}-`;
     // Reason: defensive feature detection. The destructive flow already
     // stripped data.json by the time it reaches us; if `listSecrets()` is
     // missing on this Obsidian build we cannot enumerate vault entries and
@@ -534,8 +534,8 @@ export class KeychainService {
    */
   async forgetAllSecrets(
     saveData: SaveDataFn,
-    refreshDiskState: (data: CopilotSettings) => void,
-    syncMemory: (data: Partial<CopilotSettings>) => void,
+    refreshDiskState: (data: CortexSettings) => void,
+    syncMemory: (data: Partial<CortexSettings>) => void,
     /** When true, the caller should NOT suppress the subscriber-triggered persist. */
     onDiskSaveFailed?: () => void
   ): Promise<void> {
@@ -565,7 +565,7 @@ export class KeychainService {
     }
 
     // 1. Build stripped settings — before touching any durable store.
-    const stripped = stripKeychainFields(current) as CopilotSettings & {
+    const stripped = stripKeychainFields(current) as CortexSettings & {
       _keychainOnly?: boolean;
     };
     // Reason: only flip the vault into keychain-only mode when Secure Storage

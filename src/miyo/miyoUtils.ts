@@ -1,5 +1,5 @@
 import { isSelfHostAccessValid } from "@/plusUtils";
-import { CopilotSettings } from "@/settings/model";
+import { CortexSettings } from "@/settings/model";
 import { App, Platform } from "obsidian";
 
 /**
@@ -19,7 +19,7 @@ function normalizeFilesystemPath(path: string): string {
  * @param settings - Current Copilot settings.
  * @returns Trimmed URL string like "http://192.168.1.10:8742", or "" when not configured.
  */
-export function getMiyoCustomUrl(settings: CopilotSettings): string {
+export function getMiyoCustomUrl(settings: CortexSettings): string {
   return (settings.miyoServerUrl || "").trim();
 }
 
@@ -38,7 +38,7 @@ export function getMiyoCustomUrl(settings: CopilotSettings): string {
  *
  * @param settings - Current Copilot settings.
  */
-export function shouldUseMiyo(settings: CopilotSettings): boolean {
+export function shouldUseMiyo(settings: CortexSettings): boolean {
   if (!settings.enableMiyo || !isSelfHostAccessValid()) {
     return false;
   }

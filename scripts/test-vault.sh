@@ -3,21 +3,21 @@ set -euo pipefail
 
 OBSIDIAN_BIN="/Applications/Obsidian.app/Contents/MacOS/obsidian"
 
-if [[ -z "${COPILOT_TEST_VAULT_PATH:-}" ]]; then
+if [[ -z "${CORTEX_TEST_VAULT_PATH:-}" ]]; then
   cat >&2 <<'EOF'
-error: COPILOT_TEST_VAULT_PATH is not set.
+error: CORTEX_TEST_VAULT_PATH is not set.
 
 Set it once at the user level (e.g. in ~/.zshrc or ~/.config/fish/config.fish)
 to the absolute path of an Obsidian vault you've opened at least once:
 
-  export COPILOT_TEST_VAULT_PATH="$HOME/Obsidian/CopilotTestVault"
+  export CORTEX_TEST_VAULT_PATH="$HOME/Obsidian/CortexTestVault"
 
 Then re-run: pnpm run test:vault
 EOF
   exit 1
 fi
 
-VAULT_PATH="$COPILOT_TEST_VAULT_PATH"
+VAULT_PATH="$CORTEX_TEST_VAULT_PATH"
 
 if [[ ! -d "$VAULT_PATH" ]]; then
   echo "error: vault directory not found: $VAULT_PATH" >&2

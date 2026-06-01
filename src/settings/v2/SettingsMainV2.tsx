@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { TabContent, TabItem, type TabItem as TabItemType } from "@/components/ui/setting-tabs";
 import { TabProvider, useTab } from "@/contexts/TabContext";
 import { useLatestVersion } from "@/hooks/useLatestVersion";
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { resetSettings } from "@/settings/model";
 import { CommandSettings } from "@/settings/v2/components/CommandSettings";
 import { Cog, Command, Cpu, Database, Sparkles, Wrench } from "lucide-react";
 import React from "react";
 import { AdvancedSettings } from "./components/AdvancedSettings";
 import { BasicSettings } from "./components/BasicSettings";
-import { CopilotPlusSettings } from "./components/CopilotPlusSettings";
+import { CortexPlusSettings } from "./components/CortexPlusSettings";
 import { ModelSettings } from "./components/ModelSettings";
 import { QASettings } from "./components/QASettings";
 
@@ -33,7 +33,7 @@ const components: Record<TabId, React.FC> = {
   model: () => <ModelSettings />,
   QA: () => <QASettings />,
   command: () => <CommandSettings />,
-  plus: () => <CopilotPlusSettings />,
+  plus: () => <CortexPlusSettings />,
   advanced: () => <AdvancedSettings />,
 };
 
@@ -78,7 +78,7 @@ const SettingsContent: React.FC = () => {
 };
 
 interface SettingsMainV2Props {
-  plugin: CopilotPlugin;
+  plugin: CortexPlugin;
 }
 
 const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
@@ -108,7 +108,7 @@ const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
             className="tw-flex tw-flex-col tw-gap-2 tw-text-base tw-font-semibold sm:tw-flex-row sm:tw-items-center sm:tw-justify-between"
           >
             <div className="tw-flex tw-items-center tw-gap-2">
-              <span>Copilot Settings</span>
+              <span>Cortex Settings</span>
               <div className="tw-flex tw-items-center tw-gap-1">
                 <span className="tw-text-xs tw-font-normal tw-text-muted">
                   v{plugin.manifest.version}
@@ -117,7 +117,7 @@ const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
                   <>
                     {hasUpdate ? (
                       <a
-                        href="obsidian://show-plugin?id=copilot"
+                        href="obsidian://show-plugin?id=cortex"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="tw-text-xs tw-font-normal tw-text-accent hover:tw-underline"

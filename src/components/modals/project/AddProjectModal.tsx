@@ -22,7 +22,7 @@ import { getModelKeyFromModel, useSettingsValue } from "@/settings/model";
 import { checkModelApiKey, err2String, randomUUID } from "@/utils";
 import { Settings } from "lucide-react";
 import { type UrlItem, parseProjectUrls, serializeProjectUrls } from "@/utils/urlTagUtils";
-import type CopilotPlugin from "@/main";
+import type CortexPlugin from "@/main";
 import { createPluginRoot } from "@/utils/react/createPluginRoot";
 import { App, Modal, Notice } from "obsidian";
 import React, { useMemo, useState } from "react";
@@ -32,7 +32,7 @@ interface AddProjectModalContentProps {
   initialProject?: ProjectConfig;
   onSave: (project: ProjectConfig) => Promise<void>;
   onCancel: () => void;
-  plugin?: CopilotPlugin;
+  plugin?: CortexPlugin;
 }
 
 function AddProjectModalContent({
@@ -461,7 +461,7 @@ export class AddProjectModal extends Modal {
     app: App,
     private onSave: (project: ProjectConfig) => Promise<void>,
     private initialProject?: ProjectConfig,
-    private plugin?: CopilotPlugin
+    private plugin?: CortexPlugin
   ) {
     super(app);
   }

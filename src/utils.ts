@@ -16,7 +16,7 @@ import {
   TEXT_READABLE_EXTENSIONS,
 } from "@/constants";
 import { logInfo, logWarn } from "@/logger";
-import { CopilotSettings } from "@/settings/model";
+import { CortexSettings } from "@/settings/model";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { Document } from "@langchain/core/documents";
 import { MemoryVariables } from "@langchain/core/memory";
@@ -55,7 +55,7 @@ interface APIError extends Error {
 // Error message constants
 const ERROR_MESSAGES = {
   INVALID_LICENSE_KEY_USER:
-    "Invalid Copilot Plus license key. Please check your license key in settings.",
+    "Invalid Cortex Plus license key. Please check your license key in settings.",
   UNKNOWN_ERROR: "An unknown error occurred",
   REQUEST_FAILED: (status: number) => `Request failed, status ${status}`,
 } as const;
@@ -276,7 +276,7 @@ export const formatDateTime = (
  * Works across desktop and mobile. Safe to call repeatedly.
  *
  * Examples:
- * - ensureFolderExists("copilot/copilot-conversations")
+ * - ensureFolderExists("cortex/cortex-conversations")
  * - ensureFolderExists("some/deep/nested/path")
  *
  * Throws if any segment conflicts with an existing file.
@@ -347,7 +347,7 @@ export function isAllowedFileForNoteContext(file: TFile | null): boolean {
 }
 
 /**
- * Checks if a chain type is a Plus mode chain (Copilot Plus or Project Chain).
+ * Checks if a chain type is a Plus mode chain (Cortex Plus or Project Chain).
  * Plus mode chains have access to premium features like PDF processing and URL processing.
  * @param chainType The chain type to check
  * @returns true if this is a Plus mode chain, false otherwise
@@ -402,7 +402,7 @@ export interface ChatHistoryEntry {
  * Extract text-only chat history from memory variables.
  * This function pairs messages by index (i, i+1) and returns only string content.
  *
- * Note: For multimodal chains (CopilotPlus, AutonomousAgent), use
+ * Note: For multimodal chains (CortexPlus, AutonomousAgent), use
  * chatHistoryUtils.processRawChatHistory instead to preserve image content.
  *
  * @param memoryVariables Memory variables from LangChain memory
@@ -742,9 +742,8 @@ export async function safeFetch(
     statusText: response.status.toString(),
     headers: new Headers(response.headers),
     url: url,
-    type: "basic" as ResponseType,
+    type: "basic",
     redirected: false,
-    bytes: () => Promise.resolve(new Uint8Array(0)),
     body: createReadableStreamFromString(response.text),
     bodyUsed: true,
     json: (): Promise<unknown> => Promise.resolve(response.json as unknown),
@@ -757,7 +756,7 @@ export async function safeFetch(
       // Reason: Buffer (from the `buffer` polyfill imported above) is the
       // cross-platform path — bare global Buffer is undefined in mobile WebView.
       const buf = Buffer.from(base64, "base64");
-      return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+      return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
     },
     blob: () => {
       throw new Error("not implemented");
@@ -768,7 +767,9 @@ export async function safeFetch(
     clone: () => {
       throw new Error("not implemented");
     },
-  };
+    // bytes() was added to the Response interface in TypeScript 5.7; cast to satisfy older tsc
+    ...{ bytes: () => Promise.resolve(new Uint8Array(0)) },
+  } as Response;
 }
 
 /**
@@ -831,7 +832,7 @@ export function getProviderInfo(provider: string): ProviderMetadata {
 
 export function getProviderLabel(provider: string, model?: CustomModel): string {
   const baseLabel = ProviderInfo[provider as Provider]?.label || provider;
-  return baseLabel + (model?.believerExclusive && baseLabel === "Copilot Plus" ? "(Believer)" : "");
+  return baseLabel + (model?.believerExclusive && baseLabel === "Cortex Plus" ? "(Believer)" : "");
 }
 
 /**
@@ -1124,7 +1125,7 @@ export function getNeedSetKeyProvider(): Provider[] {
 
 export function checkModelApiKey(
   model: CustomModel,
-  settings: Readonly<CopilotSettings>
+  settings: Readonly<CortexSettings>
 ): {
   hasApiKey: boolean;
   errorNotice?: string;
@@ -1153,7 +1154,7 @@ export function checkModelApiKey(
       return {
         hasApiKey: false,
         errorNotice:
-          "GitHub Copilot is not authenticated. Please connect it in Settings > Copilot > Basic Tab > Set Keys.",
+          "GitHub Copilot is not authenticated. Please connect it in Settings > Cortex > Basic Tab > Set Keys.",
       };
     }
     return { hasApiKey: true };
@@ -1166,7 +1167,7 @@ export function checkModelApiKey(
   if (needSetKeyPath && hasNoApiKey) {
     const notice =
       `Please configure API Key for ${model.name} in settings first.` +
-      "\nPath: Settings > copilot plugin > Basic Tab > Set Keys";
+      "\nPath: Settings > Cortex plugin > Basic Tab > Set Keys";
     return {
       hasApiKey: false,
       errorNotice: notice,

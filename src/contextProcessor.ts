@@ -591,7 +591,7 @@ export class ContextProcessor {
         // 2. Apply chain restrictions only to supported files that are NOT text-readable
         if (!isPlusChain(currentChain) && !isTextReadableFile(note)) {
           // This file type is supported, but requires Plus mode (e.g., PDF)
-          logWarn(`File type ${note.extension} requires Copilot Plus mode for context processing.`);
+          logWarn(`File type ${note.extension} requires Cortex Plus mode for context processing.`);
           // Show user-facing notice about the restriction
           new Notice(RESTRICTION_MESSAGES.NON_MARKDOWN_FILES_RESTRICTED);
           return;

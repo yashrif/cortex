@@ -12,7 +12,7 @@ import { Notice } from "obsidian";
 import React, { useState } from "react";
 import { ToolSettingsSection } from "./ToolSettingsSection";
 
-export const CopilotPlusSettings: React.FC = () => {
+export const CortexPlusSettings: React.FC = () => {
   const app = useApp();
   const settings = useSettingsValue();
   const [isValidatingSelfHost, setIsValidatingSelfHost] = useState(false);
@@ -130,7 +130,7 @@ export const CopilotPlusSettings: React.FC = () => {
             onChange={(value) => {
               updateSetting("convertedDocOutputFolder", value);
             }}
-            placeholder="e.g. copilot/converteddocs"
+            placeholder="e.g. cortex/converteddocs"
           />
 
           <div className="tw-pt-4 tw-text-xl tw-font-semibold">Memory (experimental)</div>
@@ -143,13 +143,13 @@ export const CopilotPlusSettings: React.FC = () => {
             onChange={(value) => {
               updateSetting("memoryFolderName", value);
             }}
-            placeholder="copilot/memory"
+            placeholder="cortex/memory"
           />
 
           <SettingItem
             type="switch"
             title="Reference Recent Conversation"
-            description="When enabled, Copilot references your recent conversation history to provide more contextually relevant responses. All history data is stored locally in your vault."
+            description="When enabled, Cortex references your recent conversation history to provide more contextually relevant responses. All history data is stored locally in your vault."
             checked={settings.enableRecentConversations}
             onCheckedChange={(checked) => {
               updateSetting("enableRecentConversations", checked);
@@ -172,7 +172,7 @@ export const CopilotPlusSettings: React.FC = () => {
           <SettingItem
             type="switch"
             title="Reference Saved Memories"
-            description="When enabled, Copilot can access memories that you explicitly asked it to remember. Use this to store important facts, preferences, or context for future conversations."
+            description="When enabled, Cortex can access memories that you explicitly asked it to remember. Use this to store important facts, preferences, or context for future conversations."
             checked={settings.enableSavedMemory}
             onCheckedChange={(checked) => {
               updateSetting("enableSavedMemory", checked);
@@ -232,7 +232,7 @@ export const CopilotPlusSettings: React.FC = () => {
                   <SettingItem
                     type="switch"
                     title="Enable Miyo"
-                    description="Use Miyo as your local search, PDF parsing, and context hub. Copilot will send the current vault folder name to Miyo and can request scans, but folder registration is managed in Miyo."
+                    description="Use Miyo as your local search, PDF parsing, and context hub. Cortex will send the current vault folder name to Miyo and can request scans, but folder registration is managed in Miyo."
                     checked={settings.enableMiyo}
                     onCheckedChange={(checked) => void handleMiyoSearchToggle(checked)}
                     disabled={isValidatingSelfHost}

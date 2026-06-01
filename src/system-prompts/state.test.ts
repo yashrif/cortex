@@ -12,7 +12,7 @@ import {
 } from "@/system-prompts/state";
 import { UserSystemPrompt } from "@/system-prompts/type";
 import * as settingsModel from "@/settings/model";
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 
 // Mock settings
 jest.mock("@/settings/model", () => ({
@@ -64,7 +64,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("Session Prompt");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Default Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -75,7 +75,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Default Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -86,7 +86,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -97,7 +97,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("Non-existent Prompt");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -108,7 +108,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Non-existent Default",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -119,7 +119,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("Session Prompt");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Default Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -132,7 +132,7 @@ describe("System Prompts State Management", () => {
       setSelectedPromptTitle("Non-existent Session");
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Default Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -211,7 +211,7 @@ describe("System Prompts State Management", () => {
     it("returns default prompt title from settings", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "My Default Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       expect(getDefaultSystemPromptTitle()).toBe("My Default Prompt");
     });
@@ -219,7 +219,7 @@ describe("System Prompts State Management", () => {
     it("returns empty string when no default is set", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       expect(getDefaultSystemPromptTitle()).toBe("");
     });
@@ -246,7 +246,7 @@ describe("System Prompts State Management", () => {
     it("sets session prompt to global default", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Global Default",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       initializeSessionPromptFromDefault();
 
@@ -256,7 +256,7 @@ describe("System Prompts State Management", () => {
     it("sets session prompt to empty string when no global default", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       initializeSessionPromptFromDefault();
 
@@ -278,7 +278,7 @@ describe("System Prompts State Management", () => {
       updateCachedSystemPrompts([migratedPrompt]);
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Migrated Custom System Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       const result = getEffectiveSystemPromptContent();
 
@@ -305,7 +305,7 @@ describe("System Prompts State Management", () => {
       updateCachedSystemPrompts([migratedPrompt, sessionPrompt]);
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Migrated Custom System Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       setSelectedPromptTitle("Session Override");
 
@@ -334,7 +334,7 @@ describe("System Prompts State Management", () => {
       updateCachedSystemPrompts([migratedPrompt, sessionPrompt]);
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Migrated Custom System Prompt",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       // Set session override
       setSelectedPromptTitle("Session Override");
@@ -350,7 +350,7 @@ describe("System Prompts State Management", () => {
     it("session state is independent from persistent state", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Persistent Default",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       setSelectedPromptTitle("Session Selection");
 
@@ -361,7 +361,7 @@ describe("System Prompts State Management", () => {
     it("changing session state does not affect persistent state", () => {
       jest.spyOn(settingsModel, "getSettings").mockReturnValue({
         defaultSystemPromptTitle: "Persistent Default",
-      } as CopilotSettings);
+      } as CortexSettings);
 
       setSelectedPromptTitle("Session Selection");
       setSelectedPromptTitle("Another Session Selection");

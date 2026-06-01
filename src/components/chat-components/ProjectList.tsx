@@ -1,5 +1,5 @@
 import { ProjectConfig, setCurrentProject } from "@/aiParams";
-import type CopilotPlugin from "@/main";
+import type CortexPlugin from "@/main";
 import { AddProjectModal } from "@/components/modals/project/AddProjectModal";
 import { ConfirmModal } from "@/components/modals/ConfirmModal";
 import { Button } from "@/components/ui/button";
@@ -198,7 +198,7 @@ export const ProjectList = memo(
     projects: ProjectConfig[];
     defaultOpen?: boolean;
     app: App;
-    plugin?: CopilotPlugin; // optional for backwards compatibility
+    plugin?: CortexPlugin; // optional for backwards compatibility
     onProjectAdded: (project: ProjectConfig) => Promise<void>;
     onEditProject: (originP: ProjectConfig, updateP: ProjectConfig) => Promise<void>;
     hasMessages?: boolean;

@@ -8,7 +8,7 @@ import { ExternalLink } from "lucide-react";
 import { getSettings } from "@/settings/model";
 import { createPluginRoot } from "@/utils/react/createPluginRoot";
 
-function CopilotPlusExpiredModalContent({ onCancel }: { onCancel: () => void }) {
+function CortexPlusExpiredModalContent({ onCancel }: { onCancel: () => void }) {
   const settings = getSettings();
   const isUsingPlusModels =
     isPlusModel(settings.defaultModelKey) && isPlusModel(settings.embeddingModelKey);
@@ -17,13 +17,13 @@ function CopilotPlusExpiredModalContent({ onCancel }: { onCancel: () => void }) 
     <div className="tw-flex tw-flex-col tw-gap-4">
       <div className="tw-flex tw-flex-col tw-gap-2">
         <div>
-          Your Copilot Plus license key is no longer valid. Please renew your subscription to
-          continue using Copilot Plus.
+          Your Cortex Plus license key is no longer valid. Please renew your subscription to
+          continue using Cortex Plus.
         </div>
         {isUsingPlusModels && (
           <div className="tw-text-sm tw-text-warning">
-            The Copilot Plus exclusive models will stop working. You can switch to the default
-            models in the Settings.
+            The Cortex Plus exclusive models will stop working. You can switch to the default models
+            in the Settings.
           </div>
         )}
       </div>
@@ -44,14 +44,14 @@ function CopilotPlusExpiredModalContent({ onCancel }: { onCancel: () => void }) 
   );
 }
 
-export class CopilotPlusExpiredModal extends Modal {
+export class CortexPlusExpiredModal extends Modal {
   private root: Root;
 
   constructor(app: App) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
     // @ts-ignore
-    this.setTitle("Thanks for being a Copilot Plus user 👋");
+    this.setTitle("Thanks for being a Cortex Plus user 👋");
   }
 
   onOpen() {
@@ -62,7 +62,7 @@ export class CopilotPlusExpiredModal extends Modal {
       this.close();
     };
 
-    this.root.render(<CopilotPlusExpiredModalContent onCancel={handleCancel} />);
+    this.root.render(<CortexPlusExpiredModalContent onCancel={handleCancel} />);
   }
 
   onClose() {

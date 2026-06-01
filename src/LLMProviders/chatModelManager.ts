@@ -11,7 +11,7 @@ import { getDecryptedKey } from "@/encryptionService";
 import { logError, logInfo } from "@/logger";
 import { isPlusEnabled } from "@/plusUtils";
 import {
-  CopilotSettings,
+  CortexSettings,
   getModelKeyFromModel,
   getSettings,
   subscribeToSettingsChange,
@@ -55,7 +55,7 @@ const GOOGLE_SAFETY_SETTINGS_BLOCK_NONE: SafetySetting[] = [
 // vocabulary from tiktoken.pages.dev, which blocks all LLM calls when the CDN is
 // unreachable. This char/4 estimation is the same fallback LangChain uses internally
 // before tiktoken loads. Actual token usage comes from API response metadata.
- 
+
 (
   BaseLanguageModel.prototype as { getNumTokens: (...args: unknown[]) => Promise<number> }
 ).getNumTokens = async (content: string | Array<{ type: string; text?: string }>) => {
@@ -180,7 +180,7 @@ export default class ChatModelManager {
   private getTemperatureForModel(
     modelInfo: ModelInfo,
     customModel: CustomModel,
-    settings: CopilotSettings
+    settings: CortexSettings
   ): number | undefined {
     // Thinking-enabled models don't accept temperature
     if (modelInfo.isThinkingEnabled) {
@@ -318,7 +318,7 @@ export default class ChatModelManager {
           fetch: customModel.enableCors ? safeFetch : undefined,
           defaultHeaders: {
             "HTTP-Referer": "https://obsidiancopilot.com",
-            "X-Title": "Obsidian Copilot",
+            "X-Title": "Obsidian Cortex",
           },
         },
         // Enable reasoning if the model has the reasoning capability
@@ -528,14 +528,14 @@ export default class ChatModelManager {
    * Builds configuration for Amazon Bedrock models by merging custom overrides with global defaults.
    * @param customModel - The model definition provided by the user.
    * @param modelName - The resolved Bedrock model identifier to invoke.
-   * @param settings - Current Copilot settings.
+   * @param settings - Current Cortex settings.
    * @param maxTokens - Maximum completion tokens requested for the invocation.
    * @param temperature - Optional temperature override for the invocation.
    */
   private async buildBedrockConfig(
     customModel: CustomModel,
     modelName: string,
-    settings: CopilotSettings,
+    settings: CortexSettings,
     maxTokens: number,
     temperature: number | undefined
   ): Promise<BedrockChatModelFields> {
@@ -703,7 +703,7 @@ export default class ChatModelManager {
    * Helper to validate a model config has valid credentials and meets entitlement requirements.
    * Does NOT check believerExclusive - that's validated at usage time, not selection time.
    */
-  private isModelConfigValid(model: CustomModel, settings: CopilotSettings): boolean {
+  private isModelConfigValid(model: CustomModel, settings: CortexSettings): boolean {
     const modelKey = getModelKeyFromModel(model);
     const modelInfo = ChatModelManager.modelMap[modelKey];
 
@@ -712,7 +712,7 @@ export default class ChatModelManager {
       return false;
     }
 
-    // Check Copilot Plus entitlement requirements (bypassed in self-host mode)
+    // Check Cortex Plus entitlement requirements (bypassed in self-host mode)
     if (model.plusExclusive && !isPlusEnabled()) {
       return false;
     }
@@ -808,7 +808,7 @@ export default class ChatModelManager {
       const errorMessage = `API key is not provided for the model: ${modelKey}.`;
       if ((model.provider as ChatModelProviders) === ChatModelProviders.COPILOT_PLUS) {
         throw new MissingPlusLicenseError(
-          "Copilot Plus license key is not configured. Please enter your license key in the Copilot Plus section at the top of Basic Settings."
+          "Cortex Plus license key is not configured. Please enter your license key in the Cortex Plus section at the top of Basic Settings."
         );
       }
       throw new MissingApiKeyError(errorMessage);

@@ -307,7 +307,7 @@ export function ProcessingStatus({
 
 /**
  * Scroll container with a bottom fade mask when content overflows.
- * Reuses the existing `.copilot-fade-mask-bottom` CSS class from PatternListEditor.
+ * Reuses the existing `.cortex-fade-mask-bottom` CSS class from PatternListEditor.
  */
 function ScrollableList({ maxHeight, children }: { maxHeight: string; children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -339,7 +339,7 @@ function ScrollableList({ maxHeight, children }: { maxHeight: string; children: 
         {children}
       </div>
       {isOverflowing && (
-        <div className="copilot-fade-mask-bottom tw-pointer-events-none tw-absolute tw-inset-x-0 tw-bottom-0 tw-h-8 tw-rounded-b-md" />
+        <div className="cortex-fade-mask-bottom tw-pointer-events-none tw-absolute tw-inset-x-0 tw-bottom-0 tw-h-8 tw-rounded-b-md" />
       )}
     </div>
   );

@@ -93,17 +93,17 @@ jest.mock("@/services/settingsSecretTransforms", () => ({
 
 import { FileSystemAdapter, Notice, type App } from "obsidian";
 import { getSettings } from "@/settings/model";
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 import type { CustomModel } from "@/aiParams";
 import { KeychainService, isSecretKey } from "./keychainService";
 
 /** Build a lightweight settings object. */
-function makeSettings(overrides: Partial<CopilotSettings> = {}): CopilotSettings {
+function makeSettings(overrides: Partial<CortexSettings> = {}): CortexSettings {
   return {
     activeModels: [],
     activeEmbeddingModels: [],
     ...overrides,
-  } as unknown as CopilotSettings;
+  } as unknown as CortexSettings;
 }
 
 /** Build a minimal custom model. */
@@ -318,7 +318,7 @@ describe("hydrateFromKeychain", () => {
     const service = KeychainService.getInstance(makeApp({ secretStorage }));
 
     const result = await service.hydrateFromKeychain(
-      makeSettings({ legacyProviderApiKey: "" } as unknown as Partial<CopilotSettings>)
+      makeSettings({ legacyProviderApiKey: "" } as unknown as Partial<CortexSettings>)
     );
 
     expect((result.settings as unknown as Record<string, string>).legacyProviderApiKey).toBe(
@@ -388,8 +388,8 @@ describe("forgetAllSecrets", () => {
 
     // Reason: listSecrets returns IDs for this vault and one from another vault
     secretStorage.listSecrets.mockReturnValue([
-      `copilot-v${vaultId}-open-a-i-api-key`,
-      "copilot-vother000-google-api-key",
+      `cortex-v${vaultId}-open-a-i-api-key`,
+      "cortex-vother000-google-api-key",
     ]);
 
     (getSettings as jest.Mock).mockReturnValue(
@@ -406,8 +406,8 @@ describe("forgetAllSecrets", () => {
     await service.forgetAllSecrets(saveData, refreshDiskState, syncMemory);
 
     // Reason: should only delete entries for THIS vault, not other vaults
-    expect(secretStorage.deleteSecret).toHaveBeenCalledWith(`copilot-v${vaultId}-open-a-i-api-key`);
-    expect(secretStorage.deleteSecret).not.toHaveBeenCalledWith("copilot-vother000-google-api-key");
+    expect(secretStorage.deleteSecret).toHaveBeenCalledWith(`cortex-v${vaultId}-open-a-i-api-key`);
+    expect(secretStorage.deleteSecret).not.toHaveBeenCalledWith("cortex-vother000-google-api-key");
 
     // Reason: should save stripped settings to disk with secrets blanked
     expect(saveData).toHaveBeenCalled();
@@ -458,8 +458,8 @@ describe("forgetAllSecrets", () => {
     const service = KeychainService.getInstance(makeApp({ secretStorage }));
     const vaultId = service.getVaultId();
 
-    const idA = `copilot-v${vaultId}-open-a-i-api-key`;
-    const idB = `copilot-v${vaultId}-google-api-key`;
+    const idA = `cortex-v${vaultId}-open-a-i-api-key`;
+    const idB = `cortex-v${vaultId}-google-api-key`;
     secretStorage.listSecrets.mockReturnValue([idA, idB]);
 
     // Reason: simulate partial failure — first delete succeeds, second throws.
@@ -552,10 +552,10 @@ describe("clearAllVaultSecrets", () => {
     const service = KeychainService.getInstance(makeApp({ secretStorage }));
     const vaultId = service.getVaultId();
 
-    const ok = `copilot-v${vaultId}-open-a-i-api-key`;
-    const bad1 = `copilot-v${vaultId}-google-api-key`;
-    const bad2 = `copilot-v${vaultId}-cohere-api-key`;
-    const foreign = "copilot-vother000-anthropic-api-key";
+    const ok = `cortex-v${vaultId}-open-a-i-api-key`;
+    const bad1 = `cortex-v${vaultId}-google-api-key`;
+    const bad2 = `cortex-v${vaultId}-cohere-api-key`;
+    const foreign = "cortex-vother000-anthropic-api-key";
     secretStorage.listSecrets.mockReturnValue([ok, bad1, bad2, foreign]);
 
     secretStorage.deleteSecret.mockImplementation((id: string) => {

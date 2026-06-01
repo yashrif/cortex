@@ -8,7 +8,7 @@ if (typeof window.structuredClone === "undefined") {
 
 import { DEFAULT_SETTINGS } from "@/constants";
 import type { CustomModel } from "@/aiParams";
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 
 /** Match the production secret-key heuristic without importing the real module. */
 function isSensitiveKey(key: string): boolean {
@@ -25,7 +25,7 @@ function isSensitiveKey(key: string): boolean {
 }
 
 /** Build a full settings object while keeping tests compact. */
-function makeSettings(overrides: Partial<CopilotSettings> = {}): CopilotSettings {
+function makeSettings(overrides: Partial<CortexSettings> = {}): CortexSettings {
   return {
     ...DEFAULT_SETTINGS,
     ...overrides,
@@ -53,7 +53,7 @@ async function loadModule(overrides?: {
     isAvailable: jest.fn().mockReturnValue(true),
     getVaultId: jest.fn().mockReturnValue("vault1234"),
     setVaultId: jest.fn(),
-    hydrateFromKeychain: jest.fn(async (settings: CopilotSettings) => ({
+    hydrateFromKeychain: jest.fn(async (settings: CortexSettings) => ({
       settings,
       hadFailures: false,
     })),
@@ -85,13 +85,13 @@ async function loadModule(overrides?: {
 
   const mockSettings = { current: makeSettings() };
   jest.doMock("@/settings/model", () => ({
-    sanitizeSettings: jest.fn((s: CopilotSettings) => s),
+    sanitizeSettings: jest.fn((s: CortexSettings) => s),
     getModelKeyFromModel: jest.fn(
       (m: { name: string; provider: string }) => `${m.name}|${m.provider}`
     ),
     normalizeModelProvider: jest.fn((p: string) => (p === "azure_openai" ? "azure openai" : p)),
     getSettings: jest.fn(() => mockSettings.current),
-    setSettings: jest.fn((s: Partial<CopilotSettings>) => {
+    setSettings: jest.fn((s: Partial<CortexSettings>) => {
       mockSettings.current = { ...mockSettings.current, ...s };
     }),
   }));
@@ -115,7 +115,7 @@ async function loadModule(overrides?: {
       }
       return false;
     }),
-    stripKeychainFields: jest.fn((s: CopilotSettings) => {
+    stripKeychainFields: jest.fn((s: CortexSettings) => {
       const out = { ...s } as unknown as Record<string, unknown>;
       for (const key of Object.keys(out)) {
         if (isSensitiveKey(key)) out[key] = "";
@@ -128,9 +128,9 @@ async function loadModule(overrides?: {
           apiKey: "",
         }));
       }
-      return out as unknown as CopilotSettings;
+      return out as unknown as CortexSettings;
     }),
-    cleanupLegacyFields: jest.fn((s: CopilotSettings) => {
+    cleanupLegacyFields: jest.fn((s: CortexSettings) => {
       const out = { ...s } as unknown as Record<string, unknown>;
       delete out.enableEncryption;
       delete out._keychainMigrated;
@@ -140,10 +140,10 @@ async function loadModule(overrides?: {
         out._keychainOnly = out._diskSecretsCleared;
       }
       delete out._diskSecretsCleared;
-      return out as unknown as CopilotSettings;
+      return out as unknown as CortexSettings;
     }),
     isKeychainOnly: jest.fn(
-      (s: CopilotSettings) => (s as unknown as Record<string, unknown>)._keychainOnly === true
+      (s: CortexSettings) => (s as unknown as Record<string, unknown>)._keychainOnly === true
     ),
   }));
 
@@ -219,7 +219,7 @@ describe("loadSettingsWithKeychain", () => {
   it("keychain-only mode reads from keychain and ignores any stale disk secret", async () => {
     const { mod, keychain } = await loadModule({
       keychain: {
-        hydrateFromKeychain: jest.fn(async (s: CopilotSettings) => ({
+        hydrateFromKeychain: jest.fn(async (s: CortexSettings) => ({
           settings: { ...s, openAIApiKey: "kc-value" },
           hadFailures: false,
         })),
@@ -315,7 +315,7 @@ describe("loadSettingsWithKeychain", () => {
       makeSettings({
         _keychainVaultId: "vault1234",
         _diskSecretsCleared: true,
-      } as unknown as Partial<CopilotSettings>),
+      } as unknown as Partial<CortexSettings>),
       jest.fn().mockResolvedValue(undefined)
     );
 

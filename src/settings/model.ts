@@ -8,7 +8,7 @@ import {
   AGENT_MAX_ITERATIONS_LIMIT,
   BUILTIN_CHAT_MODELS,
   BUILTIN_EMBEDDING_MODELS,
-  COPILOT_FOLDER_ROOT,
+  CORTEX_FOLDER_ROOT,
   DEFAULT_OPEN_AREA,
   DEFAULT_QA_EXCLUSIONS_SETTING,
   DEFAULT_SETTINGS,
@@ -45,7 +45,7 @@ export interface LegacyCommandSettings {
   showInContextMenu: boolean;
 }
 
-export interface CopilotSettings {
+export interface CortexSettings {
   userId: string;
   plusLicenseKey: string;
   openAIApiKey: string;
@@ -110,7 +110,7 @@ export interface CopilotSettings {
   promptSortStrategy: string;
   chatHistorySortStrategy: SortStrategy;
   projectListSortStrategy: SortStrategy;
-  /** Projects config root folder in vault (default: "copilot/projects"). */
+  /** Projects config root folder in vault (default: "cortex/projects"). */
   projectsFolder: string;
   embeddingRequestsPerMin: number;
   embeddingBatchSize: number;
@@ -221,15 +221,15 @@ export interface CopilotSettings {
 }
 
 export const settingsStore = createStore();
-export const settingsAtom = atom<CopilotSettings>(DEFAULT_SETTINGS);
+export const settingsAtom = atom<CortexSettings>(DEFAULT_SETTINGS);
 
 /**
  * Resolve a valid embedding model key for the current settings.
  *
- * @param settings - Current Copilot settings.
+ * @param settings - Current Cortex settings.
  * @returns A valid embedding model key.
  */
-function resolveEmbeddingModelKey(settings: CopilotSettings): string {
+function resolveEmbeddingModelKey(settings: CortexSettings): string {
   const activeEmbeddingModelKeys = new Set(
     (settings.activeEmbeddingModels || []).map((model) => getModelKeyFromModel(model))
   );
@@ -244,14 +244,14 @@ function resolveEmbeddingModelKey(settings: CopilotSettings): string {
 /**
  * Sets the settings in the atom.
  */
-export function setSettings(settings: Partial<CopilotSettings>) {
+export function setSettings(settings: Partial<CortexSettings>) {
   const newSettings = mergeAllActiveModelsWithCoreModels({ ...getSettings(), ...settings });
   newSettings.embeddingModelKey = resolveEmbeddingModelKey(newSettings);
   settingsStore.set(settingsAtom, newSettings);
 }
 
 /**
- * Normalize QA exclusion patterns and guarantee the Copilot folder root is excluded.
+ * Normalize QA exclusion patterns and guarantee the Cortex folder root is excluded.
  * @param rawValue - Persisted QA exclusion setting value.
  * @returns Encoded QA exclusion patterns string.
  */
@@ -268,8 +268,8 @@ export function sanitizeQaExclusions(rawValue: unknown): string {
   decodedPatterns.forEach((pattern) => {
     const canonical = pattern.replace(/\/+$/, "");
     const canonicalKey = canonical.length > 0 ? canonical : pattern;
-    if (canonicalKey === COPILOT_FOLDER_ROOT) {
-      canonicalToOriginalPattern.set(COPILOT_FOLDER_ROOT, COPILOT_FOLDER_ROOT);
+    if (canonicalKey === CORTEX_FOLDER_ROOT) {
+      canonicalToOriginalPattern.set(CORTEX_FOLDER_ROOT, CORTEX_FOLDER_ROOT);
       return;
     }
     if (!canonicalToOriginalPattern.has(canonicalKey)) {
@@ -279,7 +279,7 @@ export function sanitizeQaExclusions(rawValue: unknown): string {
     }
   });
 
-  canonicalToOriginalPattern.set(COPILOT_FOLDER_ROOT, COPILOT_FOLDER_ROOT);
+  canonicalToOriginalPattern.set(CORTEX_FOLDER_ROOT, CORTEX_FOLDER_ROOT);
 
   return Array.from(canonicalToOriginalPattern.values())
     .map((pattern) => encodeURIComponent(pattern))
@@ -289,7 +289,7 @@ export function sanitizeQaExclusions(rawValue: unknown): string {
 /**
  * Sets a single setting in the atom.
  */
-export function updateSetting<K extends keyof CopilotSettings>(key: K, value: CopilotSettings[K]) {
+export function updateSetting<K extends keyof CortexSettings>(key: K, value: CortexSettings[K]) {
   const settings = getSettings();
   setSettings({ ...settings, [key]: value });
 }
@@ -298,7 +298,7 @@ export function updateSetting<K extends keyof CopilotSettings>(key: K, value: Co
  * Gets the settings from the atom. Use this if you don't need to subscribe to
  * changes.
  */
-export function getSettings(): Readonly<CopilotSettings> {
+export function getSettings(): Readonly<CortexSettings> {
   return settingsStore.get(settingsAtom);
 }
 
@@ -327,7 +327,7 @@ export function resetSettings(): void {
  * Subscribes to changes in the settings atom.
  */
 export function subscribeToSettingsChange(
-  callback: (prev: CopilotSettings, next: CopilotSettings) => void
+  callback: (prev: CortexSettings, next: CortexSettings) => void
 ): () => void {
   let previousValue = getSettings();
 
@@ -341,7 +341,7 @@ export function subscribeToSettingsChange(
 /**
  * Hook to get the settings value from the atom.
  */
-export function useSettingsValue(): Readonly<CopilotSettings> {
+export function useSettingsValue(): Readonly<CortexSettings> {
   return useAtomValue(settingsAtom, {
     store: settingsStore,
   });
@@ -359,7 +359,7 @@ export function normalizeModelProvider(provider: string): string {
  * Sanitizes the settings to ensure they are valid.
  * Note: This will be better handled by Zod in the future.
  */
-export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
+export function sanitizeSettings(settings: CortexSettings): CortexSettings {
   // If settings is null/undefined, use DEFAULT_SETTINGS
   const settingsToSanitize = settings || DEFAULT_SETTINGS;
   const rawSettings = settingsToSanitize as unknown as Record<string, unknown>;
@@ -390,7 +390,7 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
     });
   }
 
-  const sanitizedSettings: CopilotSettings = { ...settingsToSanitize };
+  const sanitizedSettings: CortexSettings = { ...settingsToSanitize };
   const sanitizedSettingsRecord = sanitizedSettings as unknown as Record<string, unknown>;
   delete sanitizedSettingsRecord.miyoRemoteVaultPath;
   delete sanitizedSettingsRecord.miyoVaultName;
@@ -653,7 +653,7 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
   return sanitizedSettings;
 }
 
-function mergeAllActiveModelsWithCoreModels(settings: CopilotSettings): CopilotSettings {
+function mergeAllActiveModelsWithCoreModels(settings: CortexSettings): CortexSettings {
   settings.activeModels = mergeActiveModels(settings.activeModels, BUILTIN_CHAT_MODELS);
   settings.activeEmbeddingModels = filterUnsupportedEmbeddingModels(
     mergeActiveModels(settings.activeEmbeddingModels, BUILTIN_EMBEDDING_MODELS)

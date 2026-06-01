@@ -10,7 +10,7 @@
  */
 
 import { DEFAULT_SETTINGS } from "@/constants";
-import { type CopilotSettings } from "@/settings/model";
+import { type CortexSettings } from "@/settings/model";
 import { type CustomModel } from "@/aiParams";
 import { isSensitiveKey } from "@/encryptionService";
 // Reason: do NOT import from @/logger here. The logger depends on getSettings(),
@@ -36,8 +36,8 @@ export const TOP_LEVEL_SECRET_FIELDS: readonly string[] = Object.freeze(
   Object.keys(DEFAULT_SETTINGS as unknown as Record<string, unknown>).filter(isSensitiveKey)
 );
 
-/** Helper to cast CopilotSettings to a Record for dynamic key access. */
-function asRecord(obj: CopilotSettings): Record<string, unknown> {
+/** Helper to cast CortexSettings to a Record for dynamic key access. */
+function asRecord(obj: CortexSettings): Record<string, unknown> {
   return obj as unknown as Record<string, unknown>;
 }
 
@@ -100,7 +100,7 @@ export function hasPersistedSecrets(rawData: Record<string, unknown>): boolean {
  *
  * @param settings - In-memory settings to strip.
  */
-export function stripKeychainFields(settings: CopilotSettings): CopilotSettings {
+export function stripKeychainFields(settings: CortexSettings): CortexSettings {
   const out = asRecord({ ...settings });
 
   // Strip top-level sensitive fields
@@ -113,7 +113,7 @@ export function stripKeychainFields(settings: CopilotSettings): CopilotSettings 
   out.activeModels = stripModelSecrets(settings.activeModels ?? []);
   out.activeEmbeddingModels = stripModelSecrets(settings.activeEmbeddingModels ?? []);
 
-  return out as unknown as CopilotSettings;
+  return out as unknown as CortexSettings;
 }
 
 /** Set secret fields to `""` on each model, returning new array. */
@@ -144,7 +144,7 @@ function stripModelSecrets(models: CustomModel[]): CustomModel[] {
  *
  * Returns a new object — does NOT mutate the input.
  */
-export function cleanupLegacyFields(settings: CopilotSettings): CopilotSettings {
+export function cleanupLegacyFields(settings: CortexSettings): CortexSettings {
   const out = asRecord({ ...settings });
   // Reason: these fields are from earlier dev iterations and should not persist.
   delete out.enableEncryption;
@@ -160,7 +160,7 @@ export function cleanupLegacyFields(settings: CopilotSettings): CopilotSettings 
     out._keychainOnly = out._diskSecretsCleared;
   }
   delete out._diskSecretsCleared;
-  return out as unknown as CopilotSettings;
+  return out as unknown as CortexSettings;
 }
 
 // ---------------------------------------------------------------------------
@@ -172,6 +172,6 @@ export function cleanupLegacyFields(settings: CopilotSettings): CopilotSettings 
  * vault. Centralised check so business code does not sprinkle
  * `_keychainOnly === true` comparisons throughout the codebase.
  */
-export function isKeychainOnly(settings: CopilotSettings): boolean {
+export function isKeychainOnly(settings: CortexSettings): boolean {
   return (settings as unknown as Record<string, unknown>)._keychainOnly === true;
 }

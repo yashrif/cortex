@@ -4,7 +4,7 @@ import { MiyoClient } from "@/miyo/MiyoClient";
 import { MiyoServiceDiscovery } from "@/miyo/MiyoServiceDiscovery";
 import { getSettings } from "@/settings/model";
 import { requestUrl, type RequestUrlResponse } from "obsidian";
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 
 jest.mock("obsidian", () => ({
   requestUrl: jest.fn(),
@@ -46,7 +46,7 @@ describe("MiyoClient", () => {
     mockedGetSettings.mockReturnValue({
       plusLicenseKey: "plus-test-license",
       debug: false,
-    } as CopilotSettings);
+    } as CortexSettings);
     mockedGetDecryptedKey.mockResolvedValue("plus-test-license");
     mockResolveBaseUrl.mockResolvedValue("http://127.0.0.1:8742");
     mockedGetInstance.mockReturnValue({
