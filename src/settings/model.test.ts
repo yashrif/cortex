@@ -1,11 +1,11 @@
 import {
-  COPILOT_FOLDER_ROOT,
+  CORTEX_FOLDER_ROOT,
   DEFAULT_QA_EXCLUSIONS_SETTING,
   DEFAULT_SYSTEM_PROMPT,
   DEFAULT_SETTINGS,
   SEND_SHORTCUT,
 } from "@/constants";
-import { sanitizeQaExclusions, sanitizeSettings, CopilotSettings } from "@/settings/model";
+import { sanitizeQaExclusions, sanitizeSettings, CortexSettings } from "@/settings/model";
 import { getEffectiveUserPrompt, getSystemPrompt } from "@/system-prompts/systemPromptBuilder";
 import * as systemPromptsState from "@/system-prompts/state";
 import * as settingsModel from "@/settings/model";
@@ -31,13 +31,13 @@ describe("sanitizeQaExclusions", () => {
   });
 
   it("keeps slash-only patterns distinct from canonical entries", () => {
-    const rawValue = `${encodeURIComponent("///")},${encodeURIComponent(COPILOT_FOLDER_ROOT)}`;
+    const rawValue = `${encodeURIComponent("///")},${encodeURIComponent(CORTEX_FOLDER_ROOT)}`;
 
     const sanitized = sanitizeQaExclusions(rawValue);
 
     expect(sanitized.split(",")).toEqual([
       encodeURIComponent("///"),
-      encodeURIComponent(COPILOT_FOLDER_ROOT),
+      encodeURIComponent(CORTEX_FOLDER_ROOT),
     ]);
   });
 
@@ -48,7 +48,7 @@ describe("sanitizeQaExclusions", () => {
 
     expect(sanitized.split(",")).toEqual([
       encodeURIComponent("folder/"),
-      encodeURIComponent(COPILOT_FOLDER_ROOT),
+      encodeURIComponent(CORTEX_FOLDER_ROOT),
     ]);
   });
 });
@@ -58,7 +58,7 @@ describe("sanitizeSettings - defaultSendShortcut migration", () => {
     const settingsWithoutShortcut = {
       ...DEFAULT_SETTINGS,
       defaultSendShortcut: undefined,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(settingsWithoutShortcut);
 
@@ -69,7 +69,7 @@ describe("sanitizeSettings - defaultSendShortcut migration", () => {
     const settingsWithInvalidShortcut = {
       ...DEFAULT_SETTINGS,
       defaultSendShortcut: "invalid-shortcut",
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(settingsWithInvalidShortcut);
 
@@ -105,7 +105,7 @@ describe("sanitizeSettings - autoAddActiveContentToContext migration", () => {
       ...DEFAULT_SETTINGS,
       autoAddActiveContentToContext: undefined,
       includeActiveNoteAsContext: true,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(oldSettings);
 
@@ -117,7 +117,7 @@ describe("sanitizeSettings - autoAddActiveContentToContext migration", () => {
       ...DEFAULT_SETTINGS,
       autoAddActiveContentToContext: undefined,
       includeActiveNoteAsContext: false,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(oldSettings);
 
@@ -128,7 +128,7 @@ describe("sanitizeSettings - autoAddActiveContentToContext migration", () => {
     const newSettings = {
       ...DEFAULT_SETTINGS,
       autoAddActiveContentToContext: undefined,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(newSettings);
 
@@ -144,7 +144,7 @@ describe("sanitizeSettings - autoAddSelectionToContext migration", () => {
       ...DEFAULT_SETTINGS,
       autoAddSelectionToContext: undefined,
       autoIncludeTextSelection: true,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(oldSettings);
 
@@ -156,7 +156,7 @@ describe("sanitizeSettings - autoAddSelectionToContext migration", () => {
       ...DEFAULT_SETTINGS,
       autoAddSelectionToContext: undefined,
       autoIncludeTextSelection: false,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(oldSettings);
 
@@ -167,7 +167,7 @@ describe("sanitizeSettings - autoAddSelectionToContext migration", () => {
     const newSettings = {
       ...DEFAULT_SETTINGS,
       autoAddSelectionToContext: undefined,
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(newSettings);
 
@@ -183,7 +183,7 @@ describe("sanitizeSettings - legacy Miyo settings cleanup", () => {
       enableMiyoSearch: true,
       miyoServerUrl: "http://127.0.0.1:8742",
       miyoRemoteVaultPath: "\\\\Mac\\Home\\Downloads\\graham-essays-main",
-    } as unknown as CopilotSettings;
+    } as unknown as CortexSettings;
 
     const sanitized = sanitizeSettings(legacySettings);
 

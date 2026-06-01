@@ -63,7 +63,7 @@ const CopilotSpinner: React.FC = () => {
       width={gridSize}
       height={gridSize}
       viewBox={`0 0 ${gridSize} ${gridSize}`}
-      className="copilot-spinner"
+      className="cortex-spinner"
     >
       {sigmaDots.map((dot) => {
         const cx = dot.col * (dotSize + gap) + dotSize / 2;
@@ -76,7 +76,7 @@ const CopilotSpinner: React.FC = () => {
             cy={cy}
             r={dotSize / 2}
             // eslint-disable-next-line tailwindcss/no-custom-classname
-            className={`copilot-spinner-dot copilot-spinner-dot-${dot.animIndex}`}
+            className={`cortex-spinner-dot cortex-spinner-dot-${dot.animIndex}`}
           />
         );
       })}

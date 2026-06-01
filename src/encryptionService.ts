@@ -1,5 +1,5 @@
 /**
- * Encryption/decryption service for Copilot secrets.
+ * Encryption/decryption service for Cortex secrets.
  *
  * After the OS Keychain migration, this module only provides:
  * - Decryption of legacy encrypted values (for reading legacy encrypted disk values)
@@ -56,7 +56,7 @@ const ENCRYPTION_PREFIX = "enc_";
 const DECRYPTION_PREFIX = "dec_";
 
 /**
- * Check whether a value looks like a well-formed encrypted Copilot secret
+ * Check whether a value looks like a well-formed encrypted Cortex secret
  * (recognized prefix + plausible base64 payload).
  *
  * Use this when the caller wants strict detection — for example, deciding
@@ -80,7 +80,7 @@ export function isEncryptedValue(value: string): boolean {
 
 /**
  * Permissive sibling of {@link isEncryptedValue}: returns true for any
- * value carrying a Copilot encryption prefix, regardless of whether the
+ * value carrying a Cortex encryption prefix, regardless of whether the
  * payload still looks like valid base64.
  *
  * Reason: persistence code must treat "prefix matches but payload is

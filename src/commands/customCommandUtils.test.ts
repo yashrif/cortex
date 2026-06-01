@@ -664,11 +664,11 @@ describe("sortSlashCommands", () => {
 
 describe("parseCustomCommandFile", () => {
   interface MockFrontmatter {
-    "copilot-command-context-menu-enabled"?: boolean;
-    "copilot-command-slash-enabled"?: boolean;
-    "copilot-command-context-menu-order"?: number;
-    "copilot-command-model-key"?: string;
-    "copilot-command-last-used"?: number;
+    "cortex-command-context-menu-enabled"?: boolean;
+    "cortex-command-slash-enabled"?: boolean;
+    "cortex-command-context-menu-order"?: number;
+    "cortex-command-model-key"?: string;
+    "cortex-command-last-used"?: number;
   }
   interface MockMetadata {
     frontmatter: MockFrontmatter;
@@ -688,11 +688,11 @@ describe("parseCustomCommandFile", () => {
     // Save and mock global app
     originalApp = (window as unknown as AppRef).app;
     mockFrontmatter = {
-      "copilot-command-context-menu-enabled": true,
-      "copilot-command-slash-enabled": false,
-      "copilot-command-context-menu-order": 42,
-      "copilot-command-model-key": "gpt-4",
-      "copilot-command-last-used": 1234567890,
+      "cortex-command-context-menu-enabled": true,
+      "cortex-command-slash-enabled": false,
+      "cortex-command-context-menu-order": 42,
+      "cortex-command-model-key": "gpt-4",
+      "cortex-command-last-used": 1234567890,
     };
     mockMetadata = { frontmatter: mockFrontmatter };
     const mockedApp: MockAppLike = {
@@ -700,7 +700,7 @@ describe("parseCustomCommandFile", () => {
         read: jest
           .fn()
           .mockResolvedValue(
-            "---\ncopilot-command-context-menu-enabled: true\ncopilot-command-slash-enabled: false\ncopilot-command-context-menu-order: 42\ncopilot-command-model-key: gpt-4\ncopilot-command-last-used: 1234567890\n---\nPrompt content here."
+            "---\ncortex-command-context-menu-enabled: true\ncortex-command-slash-enabled: false\ncortex-command-context-menu-order: 42\ncortex-command-model-key: gpt-4\ncortex-command-last-used: 1234567890\n---\nPrompt content here."
           ),
       },
       metadataCache: {

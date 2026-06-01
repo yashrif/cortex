@@ -13,7 +13,7 @@ jest.mock("@/encryptionService", () => ({
   }),
 }));
 
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 import {
   cleanupLegacyFields,
   hasPersistedSecrets,
@@ -21,12 +21,12 @@ import {
 } from "./settingsSecretTransforms";
 
 /** Create a lightweight settings object for transform tests. */
-function makeSettings(overrides: Partial<CopilotSettings> = {}): CopilotSettings {
+function makeSettings(overrides: Partial<CortexSettings> = {}): CortexSettings {
   return {
     activeModels: [],
     activeEmbeddingModels: [],
     ...overrides,
-  } as unknown as CopilotSettings;
+  } as unknown as CortexSettings;
 }
 
 /** JSON-safe clone helper for mutation assertions. */
@@ -154,7 +154,7 @@ describe("cleanupLegacyFields", () => {
     const settings = makeSettings({
       _keychainMigratedAt: "2026-04-01T00:00:00.000Z",
       _migrationModalDismissed: true,
-    } as unknown as Partial<CopilotSettings>);
+    } as unknown as Partial<CortexSettings>);
 
     const result = cleanupLegacyFields(settings);
     const rec = result as unknown as Record<string, unknown>;
@@ -166,7 +166,7 @@ describe("cleanupLegacyFields", () => {
   it("migrates legacy _diskSecretsCleared → _keychainOnly", () => {
     const settings = makeSettings({
       _diskSecretsCleared: true,
-    } as unknown as Partial<CopilotSettings>);
+    } as unknown as Partial<CortexSettings>);
 
     const result = cleanupLegacyFields(settings);
     const rec = result as unknown as Record<string, unknown>;
@@ -180,7 +180,7 @@ describe("cleanupLegacyFields", () => {
     const settings = makeSettings({
       _diskSecretsCleared: true,
       _keychainOnly: false,
-    } as unknown as Partial<CopilotSettings>);
+    } as unknown as Partial<CortexSettings>);
 
     const result = cleanupLegacyFields(settings);
     const rec = result as unknown as Record<string, unknown>;
@@ -202,7 +202,7 @@ describe("cleanupLegacyFields", () => {
       _keychainOnly: true,
       _someFutureField: "future-value",
       anotherUnknownField: 42,
-    } as unknown as Partial<CopilotSettings>);
+    } as unknown as Partial<CortexSettings>);
 
     const result = cleanupLegacyFields(settings);
     const rec = result as unknown as Record<string, unknown>;

@@ -258,7 +258,7 @@ export class IndexOperations {
 
           if (currentCheckpoint > previousCheckpoint) {
             await this.indexBackend.save();
-            logInfo("Copilot index checkpoint save completed.");
+            logInfo("Cortex index checkpoint save completed.");
           }
         } catch (err) {
           this.handleError(err, {
@@ -282,7 +282,7 @@ export class IndexOperations {
         this.indexBackend
           .save()
           .then(() => {
-            logInfo("Copilot index final save completed.");
+            logInfo("Cortex index final save completed.");
             this.indexBackend.checkIndexIntegrity().catch((err) => {
               logError("Background integrity check failed:", err);
             });

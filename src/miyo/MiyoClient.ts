@@ -355,7 +355,7 @@ export class MiyoClient {
 
   /**
    * Build request headers, including auth when configured.
-   * `Authorization` uses the Copilot Plus license key.
+   * `Authorization` uses the Cortex Plus license key.
    *
    * @returns Headers object for requestUrl.
    */

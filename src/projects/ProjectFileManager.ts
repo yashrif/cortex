@@ -2,18 +2,18 @@ import { ProjectConfig } from "@/aiParams";
 import { ProjectContextCache } from "@/cache/projectContextCache";
 import { logError, logInfo, logWarn } from "@/logger";
 import {
-  COPILOT_PROJECT_CREATED,
-  COPILOT_PROJECT_DESCRIPTION,
-  COPILOT_PROJECT_EXCLUSIONS,
-  COPILOT_PROJECT_ID,
-  COPILOT_PROJECT_INCLUSIONS,
-  COPILOT_PROJECT_LAST_USED,
-  COPILOT_PROJECT_MAX_TOKENS,
-  COPILOT_PROJECT_MODEL_KEY,
-  COPILOT_PROJECT_NAME,
-  COPILOT_PROJECT_TEMPERATURE,
-  COPILOT_PROJECT_WEB_URLS,
-  COPILOT_PROJECT_YOUTUBE_URLS,
+  CORTEX_PROJECT_CREATED,
+  CORTEX_PROJECT_DESCRIPTION,
+  CORTEX_PROJECT_EXCLUSIONS,
+  CORTEX_PROJECT_ID,
+  CORTEX_PROJECT_INCLUSIONS,
+  CORTEX_PROJECT_LAST_USED,
+  CORTEX_PROJECT_MAX_TOKENS,
+  CORTEX_PROJECT_MODEL_KEY,
+  CORTEX_PROJECT_NAME,
+  CORTEX_PROJECT_TEMPERATURE,
+  CORTEX_PROJECT_WEB_URLS,
+  CORTEX_PROJECT_YOUTUBE_URLS,
   PROJECTS_UNSUPPORTED_FOLDER_NAME,
 } from "@/projects/constants";
 import { ProjectFileRecord } from "@/projects/type";
@@ -202,23 +202,23 @@ export class ProjectFileManager {
     const fm: Record<string, unknown> = {
       // Reason: do NOT fallback to folderName for id — with name-based folders,
       // folderName is derived from project name, not id.
-      [COPILOT_PROJECT_ID]: project.id.trim(),
-      [COPILOT_PROJECT_NAME]: (project.name || folderName).trim(),
-      [COPILOT_PROJECT_DESCRIPTION]: (project.description || "").trim(),
-      [COPILOT_PROJECT_MODEL_KEY]: (project.projectModelKey || "").trim(),
-      [COPILOT_PROJECT_INCLUSIONS]: project.contextSource?.inclusions || "",
-      [COPILOT_PROJECT_EXCLUSIONS]: project.contextSource?.exclusions || "",
-      [COPILOT_PROJECT_WEB_URLS]: webUrls,
-      [COPILOT_PROJECT_YOUTUBE_URLS]: youtubeUrls,
-      [COPILOT_PROJECT_CREATED]: timestamps.createdMs,
-      [COPILOT_PROJECT_LAST_USED]: timestamps.lastUsedMs,
+      [CORTEX_PROJECT_ID]: project.id.trim(),
+      [CORTEX_PROJECT_NAME]: (project.name || folderName).trim(),
+      [CORTEX_PROJECT_DESCRIPTION]: (project.description || "").trim(),
+      [CORTEX_PROJECT_MODEL_KEY]: (project.projectModelKey || "").trim(),
+      [CORTEX_PROJECT_INCLUSIONS]: project.contextSource?.inclusions || "",
+      [CORTEX_PROJECT_EXCLUSIONS]: project.contextSource?.exclusions || "",
+      [CORTEX_PROJECT_WEB_URLS]: webUrls,
+      [CORTEX_PROJECT_YOUTUBE_URLS]: youtubeUrls,
+      [CORTEX_PROJECT_CREATED]: timestamps.createdMs,
+      [CORTEX_PROJECT_LAST_USED]: timestamps.lastUsedMs,
     };
 
     if (project.modelConfigs?.temperature != null) {
-      fm[COPILOT_PROJECT_TEMPERATURE] = project.modelConfigs.temperature;
+      fm[CORTEX_PROJECT_TEMPERATURE] = project.modelConfigs.temperature;
     }
     if (project.modelConfigs?.maxTokens != null) {
-      fm[COPILOT_PROJECT_MAX_TOKENS] = project.modelConfigs.maxTokens;
+      fm[CORTEX_PROJECT_MAX_TOKENS] = project.modelConfigs.maxTokens;
     }
 
     return `---\n${stringifyYaml(fm)}---\n${project.systemPrompt || ""}`;
@@ -629,21 +629,21 @@ export class ProjectFileManager {
         if (isInVaultCache(app, filePath)) {
           // Vault-cached file: use processFrontMatter for safe field-level update
           await app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
-            const existing = Number(frontmatter[COPILOT_PROJECT_LAST_USED]);
+            const existing = Number(frontmatter[CORTEX_PROJECT_LAST_USED]);
             const existingMs = Number.isFinite(existing) && existing > 0 ? existing : 0;
             actualPersistedValue = Math.max(existingMs, timestampToPersist);
             if (existingMs === actualPersistedValue) return;
-            frontmatter[COPILOT_PROJECT_LAST_USED] = actualPersistedValue;
+            frontmatter[CORTEX_PROJECT_LAST_USED] = actualPersistedValue;
           });
         } else {
           // Hidden-folder file: use adapter-based frontmatter patch
           const adapterFm = await readFrontmatterViaAdapter(app, filePath);
-          const existing = Number(adapterFm?.[COPILOT_PROJECT_LAST_USED]);
+          const existing = Number(adapterFm?.[CORTEX_PROJECT_LAST_USED]);
           const existingMs = Number.isFinite(existing) && existing > 0 ? existing : 0;
           actualPersistedValue = Math.max(existingMs, timestampToPersist);
           if (existingMs !== actualPersistedValue) {
             await patchFrontmatter(app, filePath, {
-              [COPILOT_PROJECT_LAST_USED]: actualPersistedValue,
+              [CORTEX_PROJECT_LAST_USED]: actualPersistedValue,
             });
           }
         }

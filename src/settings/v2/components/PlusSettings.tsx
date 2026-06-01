@@ -1,4 +1,4 @@
-import { CopilotPlusWelcomeModal } from "@/components/modals/CopilotPlusWelcomeModal";
+import { CortexPlusWelcomeModal } from "@/components/modals/CortexPlusWelcomeModal";
 import { useApp } from "@/context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ export function PlusSettings() {
   return (
     <section className="tw-flex tw-flex-col tw-gap-4 tw-rounded-lg tw-bg-secondary tw-p-4">
       <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-text-xl tw-font-bold">
-        <span>Copilot Plus</span>
+        <span>Cortex Plus</span>
         {isPlusUser && (
           <Badge variant="outline" className="tw-text-success">
             Active
@@ -29,7 +29,7 @@ export function PlusSettings() {
       </div>
       <div className="tw-flex tw-flex-col tw-gap-2 tw-text-sm tw-text-muted">
         <div>
-          Copilot Plus takes your Obsidian experience to the next level with cutting-edge AI
+          Cortex Plus takes your Obsidian experience to the next level with cutting-edge AI
           capabilities. This premium tier unlocks advanced features:{" "}
           <strong>
             {" "}
@@ -38,7 +38,7 @@ export function PlusSettings() {
           </strong>
         </div>
         <div>
-          Copilot Plus is evolving fast, with new features and improvements rolling out regularly.
+          Cortex Plus is evolving fast, with new features and improvements rolling out regularly.
           Join now to secure the lowest price and get early access!
         </div>
       </div>
@@ -62,7 +62,7 @@ export function PlusSettings() {
               setError("Invalid license key");
             } else {
               setError(null);
-              new CopilotPlusWelcomeModal(app).open();
+              new CortexPlusWelcomeModal(app).open();
             }
           }}
           className="tw-min-w-10 tw-text-xs md:tw-text-sm"

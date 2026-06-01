@@ -17,7 +17,7 @@ import { requestUrl } from "obsidian";
 async function buildMultipartFromFormData(
   formData: FormData
 ): Promise<{ body: ArrayBuffer; contentType: string }> {
-  const boundary = `----CopilotBoundary${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
+  const boundary = `----CortexBoundary${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
   const encoder = new TextEncoder();
   const parts: Uint8Array[] = [];
 
@@ -165,7 +165,7 @@ export class BrevilabsClient {
   private checkLicenseKey() {
     if (!getSettings().plusLicenseKey) {
       throw new MissingPlusLicenseError(
-        "Copilot Plus license key not found. Please enter your license key in the settings."
+        "Cortex Plus license key not found. Please enter your license key in the settings."
       );
     }
   }

@@ -1,17 +1,17 @@
 import { ProjectConfig } from "@/aiParams";
 import {
-  COPILOT_PROJECT_CREATED,
-  COPILOT_PROJECT_DESCRIPTION,
-  COPILOT_PROJECT_EXCLUSIONS,
-  COPILOT_PROJECT_ID,
-  COPILOT_PROJECT_INCLUSIONS,
-  COPILOT_PROJECT_LAST_USED,
-  COPILOT_PROJECT_MAX_TOKENS,
-  COPILOT_PROJECT_MODEL_KEY,
-  COPILOT_PROJECT_NAME,
-  COPILOT_PROJECT_TEMPERATURE,
-  COPILOT_PROJECT_WEB_URLS,
-  COPILOT_PROJECT_YOUTUBE_URLS,
+  CORTEX_PROJECT_CREATED,
+  CORTEX_PROJECT_DESCRIPTION,
+  CORTEX_PROJECT_EXCLUSIONS,
+  CORTEX_PROJECT_ID,
+  CORTEX_PROJECT_INCLUSIONS,
+  CORTEX_PROJECT_LAST_USED,
+  CORTEX_PROJECT_MAX_TOKENS,
+  CORTEX_PROJECT_MODEL_KEY,
+  CORTEX_PROJECT_NAME,
+  CORTEX_PROJECT_TEMPERATURE,
+  CORTEX_PROJECT_WEB_URLS,
+  CORTEX_PROJECT_YOUTUBE_URLS,
   EMPTY_PROJECT_CONFIG,
   PROJECT_CONFIG_FILE_NAME,
   PROJECTS_UNSUPPORTED_FOLDER_NAME,
@@ -66,29 +66,29 @@ export async function writeProjectFrontmatter(
     // Reason: project.id is the stable logical identity, always set by createProject/migration.
     // Do NOT fallback to folderName — with name-based folders, folderName is derived from
     // project name, not id, so it cannot serve as an id substitute.
-    frontmatter[COPILOT_PROJECT_ID] = project.id.trim();
-    frontmatter[COPILOT_PROJECT_NAME] = (project.name || folderName).trim();
-    frontmatter[COPILOT_PROJECT_DESCRIPTION] = (project.description || "").trim();
-    frontmatter[COPILOT_PROJECT_MODEL_KEY] = (project.projectModelKey || "").trim();
+    frontmatter[CORTEX_PROJECT_ID] = project.id.trim();
+    frontmatter[CORTEX_PROJECT_NAME] = (project.name || folderName).trim();
+    frontmatter[CORTEX_PROJECT_DESCRIPTION] = (project.description || "").trim();
+    frontmatter[CORTEX_PROJECT_MODEL_KEY] = (project.projectModelKey || "").trim();
 
     if (project.modelConfigs?.temperature != null) {
-      frontmatter[COPILOT_PROJECT_TEMPERATURE] = project.modelConfigs.temperature;
+      frontmatter[CORTEX_PROJECT_TEMPERATURE] = project.modelConfigs.temperature;
     } else {
-      delete frontmatter[COPILOT_PROJECT_TEMPERATURE];
+      delete frontmatter[CORTEX_PROJECT_TEMPERATURE];
     }
 
     if (project.modelConfigs?.maxTokens != null) {
-      frontmatter[COPILOT_PROJECT_MAX_TOKENS] = project.modelConfigs.maxTokens;
+      frontmatter[CORTEX_PROJECT_MAX_TOKENS] = project.modelConfigs.maxTokens;
     } else {
-      delete frontmatter[COPILOT_PROJECT_MAX_TOKENS];
+      delete frontmatter[CORTEX_PROJECT_MAX_TOKENS];
     }
 
-    frontmatter[COPILOT_PROJECT_INCLUSIONS] = project.contextSource?.inclusions || "";
-    frontmatter[COPILOT_PROJECT_EXCLUSIONS] = project.contextSource?.exclusions || "";
-    frontmatter[COPILOT_PROJECT_WEB_URLS] = webUrls;
-    frontmatter[COPILOT_PROJECT_YOUTUBE_URLS] = youtubeUrls;
-    frontmatter[COPILOT_PROJECT_CREATED] = timestamps.createdMs;
-    frontmatter[COPILOT_PROJECT_LAST_USED] = timestamps.lastUsedMs;
+    frontmatter[CORTEX_PROJECT_INCLUSIONS] = project.contextSource?.inclusions || "";
+    frontmatter[CORTEX_PROJECT_EXCLUSIONS] = project.contextSource?.exclusions || "";
+    frontmatter[CORTEX_PROJECT_WEB_URLS] = webUrls;
+    frontmatter[CORTEX_PROJECT_YOUTUBE_URLS] = youtubeUrls;
+    frontmatter[CORTEX_PROJECT_CREATED] = timestamps.createdMs;
+    frontmatter[CORTEX_PROJECT_LAST_USED] = timestamps.lastUsedMs;
   });
 }
 
@@ -201,54 +201,49 @@ export async function parseProjectConfigFile(file: TFile): Promise<ProjectFileRe
 
   // Reason: frontmatter id is the sole authoritative identity. Do NOT fallback to folderName
   // because with name-based folders, folderName is derived from project name, not id.
-  // Files missing copilot-project-id are treated as corrupted and skipped.
-  // Reason: YAML scalar typing can parse bare numeric ids (e.g. `copilot-project-id: 123`)
+  // Files missing cortex-project-id are treated as corrupted and skipped.
+  // Reason: YAML scalar typing can parse bare numeric ids (e.g. `cortex-project-id: 123`)
   // as numbers. Coerce to string so valid numeric ids are not silently dropped.
-  const rawId = frontmatter?.[COPILOT_PROJECT_ID];
+  const rawId = frontmatter?.[CORTEX_PROJECT_ID];
   const idFromFrontmatter =
     typeof rawId === "number" && Number.isFinite(rawId)
       ? String(rawId)
       : coerceFrontmatterString(rawId, "");
   if (!idFromFrontmatter.trim()) {
-    logWarn(`[Projects] Missing ${COPILOT_PROJECT_ID} in frontmatter, skipping file: ${file.path}`);
+    logWarn(`[Projects] Missing ${CORTEX_PROJECT_ID} in frontmatter, skipping file: ${file.path}`);
     return null;
   }
   const projectId = idFromFrontmatter.trim();
 
   const nameFromFrontmatter = coerceFrontmatterString(
-    frontmatter?.[COPILOT_PROJECT_NAME],
+    frontmatter?.[CORTEX_PROJECT_NAME],
     ""
   ).trim();
   const projectName = nameFromFrontmatter || folderName;
 
-  const description = coerceFrontmatterString(
-    frontmatter?.[COPILOT_PROJECT_DESCRIPTION],
-    ""
-  ).trim();
+  const description = coerceFrontmatterString(frontmatter?.[CORTEX_PROJECT_DESCRIPTION], "").trim();
   const projectModelKey = coerceFrontmatterString(
-    frontmatter?.[COPILOT_PROJECT_MODEL_KEY],
+    frontmatter?.[CORTEX_PROJECT_MODEL_KEY],
     ""
   ).trim();
 
-  const temperature = coerceFrontmatterNumber(frontmatter?.[COPILOT_PROJECT_TEMPERATURE], NaN);
-  const maxTokens = coerceFrontmatterNumber(frontmatter?.[COPILOT_PROJECT_MAX_TOKENS], NaN);
+  const temperature = coerceFrontmatterNumber(frontmatter?.[CORTEX_PROJECT_TEMPERATURE], NaN);
+  const maxTokens = coerceFrontmatterNumber(frontmatter?.[CORTEX_PROJECT_MAX_TOKENS], NaN);
 
   // Encoded strings: strip YAML folding artifacts, keep encoded format
-  const rawInclusions = coerceFrontmatterString(frontmatter?.[COPILOT_PROJECT_INCLUSIONS], "");
-  const rawExclusions = coerceFrontmatterString(frontmatter?.[COPILOT_PROJECT_EXCLUSIONS], "");
+  const rawInclusions = coerceFrontmatterString(frontmatter?.[CORTEX_PROJECT_INCLUSIONS], "");
+  const rawExclusions = coerceFrontmatterString(frontmatter?.[CORTEX_PROJECT_EXCLUSIONS], "");
   const inclusions = stripYamlFoldingArtifacts(rawInclusions);
   const exclusions = stripYamlFoldingArtifacts(rawExclusions);
 
-  const webUrlsArray = coerceFrontmatterStringArray(frontmatter?.[COPILOT_PROJECT_WEB_URLS]);
-  const youtubeUrlsArray = coerceFrontmatterStringArray(
-    frontmatter?.[COPILOT_PROJECT_YOUTUBE_URLS]
-  );
+  const webUrlsArray = coerceFrontmatterStringArray(frontmatter?.[CORTEX_PROJECT_WEB_URLS]);
+  const youtubeUrlsArray = coerceFrontmatterStringArray(frontmatter?.[CORTEX_PROJECT_YOUTUBE_URLS]);
 
   const createdMs = coerceFrontmatterNumber(
-    frontmatter?.[COPILOT_PROJECT_CREATED],
+    frontmatter?.[CORTEX_PROJECT_CREATED],
     file.stat?.ctime ?? 0
   );
-  const lastUsedMs = coerceFrontmatterNumber(frontmatter?.[COPILOT_PROJECT_LAST_USED], 0);
+  const lastUsedMs = coerceFrontmatterNumber(frontmatter?.[CORTEX_PROJECT_LAST_USED], 0);
 
   const modelConfigs: ProjectFileRecord["project"]["modelConfigs"] = {};
   if (Number.isFinite(temperature)) {
@@ -315,7 +310,7 @@ export async function scanAllProjectConfigFiles(): Promise<{
       }
     }
   } else if (await app.vault.adapter.exists(projectsFolder)) {
-    // Reason: hidden folders (e.g. ".copilot/projects") are not indexed by vault cache.
+    // Reason: hidden folders (e.g. ".cortex/projects") are not indexed by vault cache.
     // Use adapter.list() to discover project sub-folders and resolve config files.
     const { resolveFileByPath } = await import("@/utils/vaultAdapterUtils");
     const listing = await app.vault.adapter.list(projectsFolder);
@@ -426,53 +421,53 @@ export async function ensureProjectFrontmatter(
     await app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       // Reason: do NOT fallback to record.folderName for id — with name-based folders,
       // folderName is derived from project name, not id.
-      if (frontmatter[COPILOT_PROJECT_ID] == null && record.project.id) {
-        frontmatter[COPILOT_PROJECT_ID] = record.project.id;
+      if (frontmatter[CORTEX_PROJECT_ID] == null && record.project.id) {
+        frontmatter[CORTEX_PROJECT_ID] = record.project.id;
       }
-      if (frontmatter[COPILOT_PROJECT_NAME] == null) {
-        frontmatter[COPILOT_PROJECT_NAME] = record.project.name || record.folderName;
+      if (frontmatter[CORTEX_PROJECT_NAME] == null) {
+        frontmatter[CORTEX_PROJECT_NAME] = record.project.name || record.folderName;
       }
-      if (frontmatter[COPILOT_PROJECT_DESCRIPTION] == null && record.project.description) {
-        frontmatter[COPILOT_PROJECT_DESCRIPTION] = record.project.description;
+      if (frontmatter[CORTEX_PROJECT_DESCRIPTION] == null && record.project.description) {
+        frontmatter[CORTEX_PROJECT_DESCRIPTION] = record.project.description;
       }
-      if (frontmatter[COPILOT_PROJECT_MODEL_KEY] == null && record.project.projectModelKey) {
-        frontmatter[COPILOT_PROJECT_MODEL_KEY] = record.project.projectModelKey;
+      if (frontmatter[CORTEX_PROJECT_MODEL_KEY] == null && record.project.projectModelKey) {
+        frontmatter[CORTEX_PROJECT_MODEL_KEY] = record.project.projectModelKey;
       }
       if (
-        frontmatter[COPILOT_PROJECT_TEMPERATURE] == null &&
+        frontmatter[CORTEX_PROJECT_TEMPERATURE] == null &&
         record.project.modelConfigs?.temperature != null
       ) {
-        frontmatter[COPILOT_PROJECT_TEMPERATURE] = record.project.modelConfigs.temperature;
+        frontmatter[CORTEX_PROJECT_TEMPERATURE] = record.project.modelConfigs.temperature;
       }
       if (
-        frontmatter[COPILOT_PROJECT_MAX_TOKENS] == null &&
+        frontmatter[CORTEX_PROJECT_MAX_TOKENS] == null &&
         record.project.modelConfigs?.maxTokens != null
       ) {
-        frontmatter[COPILOT_PROJECT_MAX_TOKENS] = record.project.modelConfigs.maxTokens;
+        frontmatter[CORTEX_PROJECT_MAX_TOKENS] = record.project.modelConfigs.maxTokens;
       }
       if (
-        frontmatter[COPILOT_PROJECT_INCLUSIONS] == null &&
+        frontmatter[CORTEX_PROJECT_INCLUSIONS] == null &&
         record.project.contextSource?.inclusions
       ) {
-        frontmatter[COPILOT_PROJECT_INCLUSIONS] = record.project.contextSource.inclusions;
+        frontmatter[CORTEX_PROJECT_INCLUSIONS] = record.project.contextSource.inclusions;
       }
       if (
-        frontmatter[COPILOT_PROJECT_EXCLUSIONS] == null &&
+        frontmatter[CORTEX_PROJECT_EXCLUSIONS] == null &&
         record.project.contextSource?.exclusions
       ) {
-        frontmatter[COPILOT_PROJECT_EXCLUSIONS] = record.project.contextSource.exclusions;
+        frontmatter[CORTEX_PROJECT_EXCLUSIONS] = record.project.contextSource.exclusions;
       }
-      if (frontmatter[COPILOT_PROJECT_WEB_URLS] == null && webUrls.length > 0) {
-        frontmatter[COPILOT_PROJECT_WEB_URLS] = webUrls;
+      if (frontmatter[CORTEX_PROJECT_WEB_URLS] == null && webUrls.length > 0) {
+        frontmatter[CORTEX_PROJECT_WEB_URLS] = webUrls;
       }
-      if (frontmatter[COPILOT_PROJECT_YOUTUBE_URLS] == null && youtubeUrls.length > 0) {
-        frontmatter[COPILOT_PROJECT_YOUTUBE_URLS] = youtubeUrls;
+      if (frontmatter[CORTEX_PROJECT_YOUTUBE_URLS] == null && youtubeUrls.length > 0) {
+        frontmatter[CORTEX_PROJECT_YOUTUBE_URLS] = youtubeUrls;
       }
-      if (frontmatter[COPILOT_PROJECT_CREATED] == null) {
-        frontmatter[COPILOT_PROJECT_CREATED] = createdMs;
+      if (frontmatter[CORTEX_PROJECT_CREATED] == null) {
+        frontmatter[CORTEX_PROJECT_CREATED] = createdMs;
       }
-      if (frontmatter[COPILOT_PROJECT_LAST_USED] == null) {
-        frontmatter[COPILOT_PROJECT_LAST_USED] = lastUsedMs;
+      if (frontmatter[CORTEX_PROJECT_LAST_USED] == null) {
+        frontmatter[CORTEX_PROJECT_LAST_USED] = lastUsedMs;
       }
     });
   } finally {

@@ -89,19 +89,19 @@ const INLINE_CITATION_RE = /\[(\d+(?:\s*,\s*\d+)*)\]/g;
 /**
  * Makes inline citation numbers (e.g., [1], [2]) clickable by linking them
  * to the corresponding source note. Reads the source mapping from the
- * rendered .copilot-sources section in the same message.
+ * rendered .cortex-sources section in the same message.
  */
 const linkInlineCitations = (root: HTMLElement): void => {
   // Build citation number -> source anchor mapping from the rendered sources section.
   // We store the anchor element (not just the href) so we can copy Obsidian-specific
   // attributes like data-href and class="internal-link" onto the inline citation link.
-  const sourceItems = root.querySelectorAll(".copilot-sources__item");
+  const sourceItems = root.querySelectorAll(".cortex-sources__item");
   if (sourceItems.length === 0) return;
 
   const citationAnchors = new Map<number, HTMLAnchorElement>();
   sourceItems.forEach((item) => {
-    const indexEl = item.querySelector(".copilot-sources__index");
-    const textEl = item.querySelector(".copilot-sources__text");
+    const indexEl = item.querySelector(".cortex-sources__index");
+    const textEl = item.querySelector(".cortex-sources__text");
     if (!indexEl || !textEl) return;
 
     const indexMatch = indexEl.textContent?.match(/\[(\d+)\]/);
@@ -122,7 +122,7 @@ const linkInlineCitations = (root: HTMLElement): void => {
   const doc = root.doc;
 
   // Collect text nodes that contain citation patterns (outside sources section)
-  const sourcesEl = root.querySelector(".copilot-sources");
+  const sourcesEl = root.querySelector(".cortex-sources");
   const textNodes: Text[] = [];
   const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode(node) {
@@ -160,7 +160,7 @@ const linkInlineCitations = (root: HTMLElement): void => {
 
       if (allResolved) {
         const span = doc.createElement("span");
-        span.className = "copilot-citation-group";
+        span.className = "cortex-citation-group";
         span.appendChild(doc.createTextNode("["));
         nums.forEach((num, i) => {
           if (i > 0) span.appendChild(doc.createTextNode(", "));
@@ -172,7 +172,7 @@ const linkInlineCitations = (root: HTMLElement): void => {
             link.setAttribute(attr.name, attr.value);
           }
           // Override class and add our citation-specific styling
-          link.className = `copilot-citation-link${sourceAnchor.className ? ` ${sourceAnchor.className}` : ""}`;
+          link.className = `cortex-citation-link${sourceAnchor.className ? ` ${sourceAnchor.className}` : ""}`;
           link.textContent = String(num);
           link.setAttribute("aria-label", `Source ${num}`);
           span.appendChild(link);
@@ -192,7 +192,7 @@ const linkInlineCitations = (root: HTMLElement): void => {
 
     // If the text node is inside a placeholder span, replace the span itself
     // so the placeholder wrapper is cleanly removed.
-    const replaceTarget = node.parentElement?.classList.contains("copilot-citation-ref")
+    const replaceTarget = node.parentElement?.classList.contains("cortex-citation-ref")
       ? node.parentElement
       : node;
     replaceTarget.parentNode?.replaceChild(fragment, replaceTarget);
@@ -547,7 +547,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
       // interprets [^N] as footnote references and shows bare superscript numbers.
       const citationPlaceholderProcessed = sourcesSectionProcessed.replace(
         /\[\^(\d+)\](?!:)/g,
-        '<span class="copilot-citation-ref">[$1]</span>'
+        '<span class="cortex-citation-ref">[$1]</span>'
       );
 
       // Transform [[link]] to clickable format but exclude ![[]] image links

@@ -342,7 +342,7 @@ export async function findRelevantNotes({
         },
       };
     })
-    .filter((entry) => entry !== null);
+    .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
 }
 
 /**

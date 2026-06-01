@@ -45,7 +45,7 @@ export class IndexEventHandler {
   private syncEventListeners(): void {
     const shouldListen = this.shouldHandleEvents();
     if (shouldListen && !this.listenersActive) {
-      logInfo("Copilot Plus: Initializing semantic index event listeners");
+      logInfo("Cortex Plus: Initializing semantic index event listeners");
       this.app.workspace.on("active-leaf-change", this.handleActiveLeafChange);
       this.app.vault.on("delete", this.handleFileDelete);
       this.listenersActive = true;
@@ -132,7 +132,7 @@ export class IndexEventHandler {
 
     this.debounceTimer = window.setTimeout(() => {
       if (getSettings().debug) {
-        logInfo("Copilot Plus: Triggering reindex for file ", file.path);
+        logInfo("Cortex Plus: Triggering reindex for file ", file.path);
       }
       void this.indexOps.reindexFile(file).catch((err) => logError("reindexFile failed", err));
       this.debounceTimer = null;

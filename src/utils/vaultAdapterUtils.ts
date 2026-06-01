@@ -123,7 +123,7 @@ export async function readFrontmatterViaAdapter(
 
   const result: Record<string, string> = {};
   for (const line of yaml.split(/\r?\n/)) {
-    // Reason: use [\w-] instead of \w to support hyphenated YAML keys (e.g. copilot-project-last-used)
+    // Reason: use [\w-] instead of \w to support hyphenated YAML keys (e.g. cortex-project-last-used)
     const match = line.match(/^([\w-]+):\s*(.+)/);
     if (match) {
       result[match[1]] = match[2].trim().replace(/^["']|["']$/g, "");

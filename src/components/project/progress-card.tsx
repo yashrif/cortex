@@ -22,12 +22,12 @@ import { openCachedItemPreview } from "@/utils/cacheFileOpener";
 import type { ProcessingItem } from "@/components/project/processingAdapter";
 import { ProjectFileManager } from "@/projects/ProjectFileManager";
 import { splitUrlsStringToArray } from "@/projects/projectUtils";
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { useApp } from "@/context";
 import { logError } from "@/logger";
 
 interface ProgressCardProps {
-  plugin?: CopilotPlugin;
+  plugin?: CortexPlugin;
   setHiddenCard: (hidden: boolean) => void;
   onEditContext?: () => void;
 }

@@ -68,37 +68,37 @@ describe("parseProjectConfigFile", () => {
   it("correctly parses valid frontmatter with all fields", async () => {
     const rawContent = [
       "---",
-      "copilot-project-id: my-project",
-      "copilot-project-name: My Project",
-      "copilot-project-description: A test project",
-      "copilot-project-model-key: gpt-4",
-      "copilot-project-temperature: 0.7",
-      "copilot-project-max-tokens: 2048",
-      "copilot-project-inclusions: notes/",
-      "copilot-project-exclusions: archive/",
-      "copilot-project-web-urls:",
+      "cortex-project-id: my-project",
+      "cortex-project-name: My Project",
+      "cortex-project-description: A test project",
+      "cortex-project-model-key: gpt-4",
+      "cortex-project-temperature: 0.7",
+      "cortex-project-max-tokens: 2048",
+      "cortex-project-inclusions: notes/",
+      "cortex-project-exclusions: archive/",
+      "cortex-project-web-urls:",
       "  - https://example.com",
-      "copilot-project-youtube-urls: []",
-      "copilot-project-created: 1700000000000",
-      "copilot-project-last-used: 1700000001000",
+      "cortex-project-youtube-urls: []",
+      "cortex-project-created: 1700000000000",
+      "cortex-project-last-used: 1700000001000",
       "---",
       "System prompt body",
     ].join("\n");
 
     // Use metadata-cache path (non-null frontmatter) for the happy path
     setupAppMock(rawContent, {
-      "copilot-project-id": "my-project",
-      "copilot-project-name": "My Project",
-      "copilot-project-description": "A test project",
-      "copilot-project-model-key": "gpt-4",
-      "copilot-project-temperature": 0.7,
-      "copilot-project-max-tokens": 2048,
-      "copilot-project-inclusions": "notes/",
-      "copilot-project-exclusions": "archive/",
-      "copilot-project-web-urls": ["https://example.com"],
-      "copilot-project-youtube-urls": [],
-      "copilot-project-created": 1700000000000,
-      "copilot-project-last-used": 1700000001000,
+      "cortex-project-id": "my-project",
+      "cortex-project-name": "My Project",
+      "cortex-project-description": "A test project",
+      "cortex-project-model-key": "gpt-4",
+      "cortex-project-temperature": 0.7,
+      "cortex-project-max-tokens": 2048,
+      "cortex-project-inclusions": "notes/",
+      "cortex-project-exclusions": "archive/",
+      "cortex-project-web-urls": ["https://example.com"],
+      "cortex-project-youtube-urls": [],
+      "cortex-project-created": 1700000000000,
+      "cortex-project-last-used": 1700000001000,
     });
 
     const file = makeMockFile(VALID_PATH);
@@ -120,17 +120,17 @@ describe("parseProjectConfigFile", () => {
     expect(result!.folderName).toBe("my-project");
   });
 
-  it("returns null when copilot-project-id is missing from frontmatter", async () => {
-    const rawContent = ["---", "copilot-project-name: My Project", "---", "Body text"].join("\n");
+  it("returns null when cortex-project-id is missing from frontmatter", async () => {
+    const rawContent = ["---", "cortex-project-name: My Project", "---", "Body text"].join("\n");
 
     setupAppMock(rawContent, {
-      "copilot-project-name": "My Project",
+      "cortex-project-name": "My Project",
     });
 
     const file = makeMockFile(VALID_PATH);
     const result = await parseProjectConfigFile(file);
 
-    // Reason: files without copilot-project-id are treated as corrupted and skipped.
+    // Reason: files without cortex-project-id are treated as corrupted and skipped.
     // With name-based folders, folderName can no longer serve as id fallback.
     expect(result).toBeNull();
   });

@@ -12,10 +12,10 @@ import {
 } from "@/aiParams";
 import { ContextCache, ProjectContextCache } from "@/cache/projectContextCache";
 import { ChainType } from "@/chainType";
-import CopilotView from "@/components/CopilotView";
+import CortexView from "@/components/CortexView";
 import { CHAT_VIEWTYPE, VAULT_VECTOR_STORE_STRATEGY } from "@/constants";
 import { logError, logInfo, logWarn } from "@/logger";
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { Mention } from "@/mentions/Mention";
 import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import { ProjectFileManager } from "@/projects/ProjectFileManager";
@@ -35,14 +35,14 @@ export default class ProjectManager {
   public static instance: ProjectManager;
   private currentProjectId: string | null;
   private app: App;
-  private plugin: CopilotPlugin;
+  private plugin: CortexPlugin;
   private readonly chainMangerInstance: ChainManager;
   private readonly projectContextCache: ProjectContextCache;
   private fileParserManager: FileParserManager;
   private loadTracker: ProjectLoadTracker;
   private projectRecordsUnsubscriber?: () => void;
 
-  private constructor(app: App, plugin: CopilotPlugin) {
+  private constructor(app: App, plugin: CortexPlugin) {
     this.app = app;
     this.plugin = plugin;
     this.currentProjectId = null;
@@ -168,7 +168,7 @@ export default class ProjectManager {
     return JSON.stringify(prevComparable) !== JSON.stringify(nextComparable);
   }
 
-  public static getInstance(app: App, plugin: CopilotPlugin): ProjectManager {
+  public static getInstance(app: App, plugin: CortexPlugin): ProjectManager {
     if (!ProjectManager.instance) {
       ProjectManager.instance = new ProjectManager(app, plugin);
     }
@@ -392,7 +392,7 @@ export default class ProjectManager {
 
   private refreshChatView() {
     // get chat view
-    const chatView = this.app.workspace.getLeavesOfType(CHAT_VIEWTYPE)[0]?.view as CopilotView;
+    const chatView = this.app.workspace.getLeavesOfType(CHAT_VIEWTYPE)[0]?.view as CortexView;
     if (chatView) {
       chatView.updateView();
     }
@@ -1023,7 +1023,7 @@ modified: ${stat ? new Date(stat.mtime).toISOString() : "unknown"}`;
   }
 
   private getProjectAllFiles(project: ProjectConfig) {
-    // NOTE: Must not fallback to GLOBAL inclusions and exclusions in Copilot settings in Projects!
+    // NOTE: Must not fallback to GLOBAL inclusions and exclusions in Cortex settings in Projects!
     // This is to avoid project inclusions in the project that conflict with the global ones
     // Project UI should be the ONLY source of truth for project inclusions and exclusions
     const { inclusions: inclusionPatterns, exclusions: exclusionPatterns } = getMatchingPatterns({

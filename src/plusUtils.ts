@@ -1,6 +1,6 @@
 import { setChainType, setModelKey } from "@/aiParams";
 import { ChainType } from "@/chainType";
-import { CopilotPlusExpiredModal } from "@/components/modals/CopilotPlusExpiredModal";
+import { CortexPlusExpiredModal } from "@/components/modals/CortexPlusExpiredModal";
 import {
   ChatModelProviders,
   ChatModels,
@@ -14,12 +14,12 @@ import { getSettings, setSettings, updateSetting, useSettingsValue } from "@/set
 import { Notice } from "obsidian";
 import React from "react";
 
-export const DEFAULT_COPILOT_PLUS_CHAT_MODEL = ChatModels.COPILOT_PLUS_FLASH;
-const DEFAULT_COPILOT_PLUS_CHAT_MODEL_KEY =
-  DEFAULT_COPILOT_PLUS_CHAT_MODEL + "|" + ChatModelProviders.COPILOT_PLUS;
-export const DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL = EmbeddingModels.COPILOT_PLUS_SMALL;
-export const DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL_KEY =
-  DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL + "|" + EmbeddingModelProviders.COPILOT_PLUS;
+export const DEFAULT_CORTEX_PLUS_CHAT_MODEL = ChatModels.COPILOT_PLUS_FLASH;
+const DEFAULT_CORTEX_PLUS_CHAT_MODEL_KEY =
+  DEFAULT_CORTEX_PLUS_CHAT_MODEL + "|" + ChatModelProviders.COPILOT_PLUS;
+export const DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL = EmbeddingModels.COPILOT_PLUS_SMALL;
+export const DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL_KEY =
+  DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL + "|" + EmbeddingModelProviders.COPILOT_PLUS;
 
 // ============================================================================
 // SELF-HOST MODE VALIDATION
@@ -79,7 +79,7 @@ export function isSelfHostModeValid(): boolean {
   return isSelfHostAccessValid();
 }
 
-/** Check if the model key is a Copilot Plus model. */
+/** Check if the model key is a Cortex Plus model. */
 export function isPlusModel(modelKey: string): boolean {
   return (
     (modelKey.split("|")[1] as EmbeddingModelProviders) === EmbeddingModelProviders.COPILOT_PLUS
@@ -330,13 +330,13 @@ export async function refreshSelfHostModeValidation(): Promise<void> {
 }
 
 /**
- * Apply the Copilot Plus settings.
+ * Apply the Cortex Plus settings.
  * Includes clinical fix to ensure indexing is triggered when embedding model changes,
  * as the automatic detection doesn't work reliably in all scenarios.
  */
 export function applyPlusSettings(): void {
-  const defaultModelKey = DEFAULT_COPILOT_PLUS_CHAT_MODEL_KEY;
-  const embeddingModelKey = DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL_KEY;
+  const defaultModelKey = DEFAULT_CORTEX_PLUS_CHAT_MODEL_KEY;
+  const embeddingModelKey = DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL_KEY;
   const previousEmbeddingModelKey = getSettings().embeddingModelKey;
 
   logInfo("applyPlusSettings: Changing embedding model", {
@@ -363,7 +363,7 @@ export function applyPlusSettings(): void {
       .catch((error) => {
         logError("Failed to trigger indexing after Plus settings applied:", error);
         new Notice(
-          "Failed to update Copilot index. Please try force reindexing from the command palette."
+          "Failed to update Cortex index. Please try force reindexing from the command palette."
         );
       });
   } else {
@@ -393,6 +393,6 @@ export function turnOffPlus(): void {
   const previousIsPlusUser = getSettings().isPlusUser;
   updateSetting("isPlusUser", false);
   if (previousIsPlusUser) {
-    new CopilotPlusExpiredModal(app).open();
+    new CortexPlusExpiredModal(app).open();
   }
 }

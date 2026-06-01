@@ -1,7 +1,7 @@
 import { ProjectConfig } from "@/aiParams";
 import { ConfirmModal } from "@/components/modals/ConfirmModal";
 import { logError, logInfo, logWarn } from "@/logger";
-import { COPILOT_PROJECT_ID, PROJECTS_UNSUPPORTED_FOLDER_NAME } from "@/projects/constants";
+import { CORTEX_PROJECT_ID, PROJECTS_UNSUPPORTED_FOLDER_NAME } from "@/projects/constants";
 import { deriveProjectFolderName, sanitizeVaultPathSegment } from "@/projects/projectPaths";
 import {
   ensureProjectFrontmatter,
@@ -310,9 +310,9 @@ export async function migrateProjectsFromSettingsToVault(app: App): Promise<void
       let existingId = "";
       if (existingFile instanceof TFile) {
         const existingMeta = app.metadataCache.getFileCache(existingFile);
-        existingId = String(existingMeta?.frontmatter?.[COPILOT_PROJECT_ID] ?? "").trim();
+        existingId = String(existingMeta?.frontmatter?.[CORTEX_PROJECT_ID] ?? "").trim();
         if (!existingId) {
-          existingId = await readFrontmatterFieldFromFile(vault, existingFile, COPILOT_PROJECT_ID);
+          existingId = await readFrontmatterFieldFromFile(vault, existingFile, CORTEX_PROJECT_ID);
         }
       } else {
         // Reason: hidden-folder file — read frontmatter id via adapter since TFile is unavailable.
@@ -324,7 +324,7 @@ export async function migrateProjectsFromSettingsToVault(app: App): Promise<void
           if (fmMatch) {
             const parsed = parseYaml(fmMatch[1]);
             if (parsed && typeof parsed === "object") {
-              const raw = (parsed as Record<string, unknown>)[COPILOT_PROJECT_ID];
+              const raw = (parsed as Record<string, unknown>)[CORTEX_PROJECT_ID];
               existingId = (typeof raw === "string" ? raw : "").trim();
             }
           }

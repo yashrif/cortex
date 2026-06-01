@@ -5,7 +5,7 @@ import { CustomError } from "@/error";
 import { logInfo, logWarn } from "@/logger";
 import EmbeddingsManager from "@/LLMProviders/embeddingManager";
 import { shouldUseMiyo } from "@/miyo/miyoUtils";
-import { CopilotSettings, getSettings, subscribeToSettingsChange } from "@/settings/model";
+import { CortexSettings, getSettings, subscribeToSettingsChange } from "@/settings/model";
 import { Orama } from "@orama/orama";
 import { Notice, Platform, TFile } from "obsidian";
 import { MiyoIndexBackend } from "./indexBackend/MiyoIndexBackend";
@@ -23,7 +23,7 @@ export default class VectorStoreManager {
   private indexOps: IndexOperations;
   private eventHandler: IndexEventHandler;
   private initializationPromise: Promise<void>;
-  private lastKnownSettings: CopilotSettings | undefined;
+  private lastKnownSettings: CortexSettings | undefined;
   private embeddingsManager: EmbeddingsManager;
   private indexBackend: SemanticIndexBackend;
   private oramaBackend: OramaIndexBackend;
@@ -216,7 +216,7 @@ export default class VectorStoreManager {
    * @param settings - Current Copilot settings.
    * @returns True when Miyo should be the active backend.
    */
-  private shouldUseMiyo(settings: CopilotSettings): boolean {
+  private shouldUseMiyo(settings: CortexSettings): boolean {
     return shouldUseMiyo(settings);
   }
 
@@ -226,7 +226,7 @@ export default class VectorStoreManager {
    * @param settings - Copilot settings to evaluate.
    * @returns Backend key string.
    */
-  private getBackendKey(settings: CopilotSettings): "orama" | "miyo" {
+  private getBackendKey(settings: CortexSettings): "orama" | "miyo" {
     return this.shouldUseMiyo(settings) ? "miyo" : "orama";
   }
 
@@ -237,8 +237,8 @@ export default class VectorStoreManager {
    * @param prevSettings - Previous settings snapshot.
    */
   private async refreshBackend(
-    settings: CopilotSettings,
-    prevSettings?: CopilotSettings
+    settings: CortexSettings,
+    prevSettings?: CortexSettings
   ): Promise<void> {
     const nextBackendKey = this.getBackendKey(settings);
     if (nextBackendKey === this.activeBackendKey) {

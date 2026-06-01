@@ -15,19 +15,19 @@ export const EMPTY_PROJECT_CONFIG: ProjectConfig = {
   UsageTimestamps: 0,
 };
 
-// Frontmatter property keys (copilot-project-* prefix to avoid user property conflicts)
-export const COPILOT_PROJECT_ID = "copilot-project-id";
-export const COPILOT_PROJECT_NAME = "copilot-project-name";
-export const COPILOT_PROJECT_DESCRIPTION = "copilot-project-description";
-export const COPILOT_PROJECT_MODEL_KEY = "copilot-project-model-key";
-export const COPILOT_PROJECT_TEMPERATURE = "copilot-project-temperature";
-export const COPILOT_PROJECT_MAX_TOKENS = "copilot-project-max-tokens";
-export const COPILOT_PROJECT_CREATED = "copilot-project-created";
-export const COPILOT_PROJECT_LAST_USED = "copilot-project-last-used";
-export const COPILOT_PROJECT_INCLUSIONS = "copilot-project-inclusions";
-export const COPILOT_PROJECT_EXCLUSIONS = "copilot-project-exclusions";
-export const COPILOT_PROJECT_WEB_URLS = "copilot-project-web-urls";
-export const COPILOT_PROJECT_YOUTUBE_URLS = "copilot-project-youtube-urls";
+// Frontmatter property keys (cortex-project-* prefix to avoid user property conflicts)
+export const CORTEX_PROJECT_ID = "cortex-project-id";
+export const CORTEX_PROJECT_NAME = "cortex-project-name";
+export const CORTEX_PROJECT_DESCRIPTION = "cortex-project-description";
+export const CORTEX_PROJECT_MODEL_KEY = "cortex-project-model-key";
+export const CORTEX_PROJECT_TEMPERATURE = "cortex-project-temperature";
+export const CORTEX_PROJECT_MAX_TOKENS = "cortex-project-max-tokens";
+export const CORTEX_PROJECT_CREATED = "cortex-project-created";
+export const CORTEX_PROJECT_LAST_USED = "cortex-project-last-used";
+export const CORTEX_PROJECT_INCLUSIONS = "cortex-project-inclusions";
+export const CORTEX_PROJECT_EXCLUSIONS = "cortex-project-exclusions";
+export const CORTEX_PROJECT_WEB_URLS = "cortex-project-web-urls";
+export const CORTEX_PROJECT_YOUTUBE_URLS = "cortex-project-youtube-urls";
 
 // File structure conventions
 export const PROJECT_CONFIG_FILE_NAME = "project.md";

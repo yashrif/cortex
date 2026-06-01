@@ -1,10 +1,10 @@
 {
-  "id": "copilot",
-  "name": "Copilot",
+  "id": "cortex",
+  "name": "Cortex",
   "version": "3.3.3",
   "minAppVersion": "1.11.4",
   "isDesktopOnly": false,
-  "description": "Your AI Copilot: Chat with Your Second Brain, Learn Faster, Work Smarter.",
+  "description": "Your AI Cortex: Chat with Your Second Brain, Learn Faster, Work Smarter.",
   "author": "Logan Yang",
   "authorUrl": "https://twitter.com/logancyang",
   "fundingUrl": {

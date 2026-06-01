@@ -1,7 +1,7 @@
 import { logInfo, logWarn } from "@/logger";
 import { isSelfHostModeValid } from "@/plusUtils";
 import { shouldUseMiyo } from "@/miyo/miyoUtils";
-import { getSettings, CopilotSettings } from "@/settings/model";
+import { getSettings, CortexSettings } from "@/settings/model";
 import { App } from "obsidian";
 import { SelfHostRetriever, VectorSearchBackend } from "./selfHostRetriever";
 import { MiyoSemanticRetriever } from "./miyo/MiyoSemanticRetriever";
@@ -135,7 +135,7 @@ export class RetrieverFactory {
   static async createRetriever(
     app: App,
     options: RetrieverOptions,
-    settings?: Partial<CopilotSettings>
+    settings?: Partial<CortexSettings>
   ): Promise<RetrieverSelectionResult> {
     const currentSettings = settings ? { ...getSettings(), ...settings } : getSettings();
 
@@ -256,7 +256,7 @@ export class RetrieverFactory {
    * @returns The vector search backend instance, or null if unavailable
    */
   private static async getSelfHostedBackend(
-    _settings: CopilotSettings
+    _settings: CortexSettings
   ): Promise<VectorSearchBackend | null> {
     // Return registered backend if available
     if (RetrieverFactory.selfHostedBackend) {
@@ -288,7 +288,7 @@ export class RetrieverFactory {
    * @returns The type of retriever that would be created
    */
   static getRetrieverType(
-    settings?: Partial<CopilotSettings>
+    settings?: Partial<CortexSettings>
   ): "self_hosted" | "semantic" | "lexical" {
     const currentSettings = settings ? { ...getSettings(), ...settings } : getSettings();
 
@@ -323,7 +323,7 @@ export class RetrieverFactory {
    * @param settings - Copilot settings snapshot.
    * @returns True when Miyo should be used for semantic retrieval.
    */
-  private static shouldUseMiyo(settings: CopilotSettings): boolean {
+  private static shouldUseMiyo(settings: CortexSettings): boolean {
     return shouldUseMiyo(settings);
   }
 

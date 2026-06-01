@@ -420,7 +420,7 @@ export class ProjectRegister {
         return;
       }
 
-      // Reason: if the user edited copilot-project-id directly, clear the old id's
+      // Reason: if the user edited cortex-project-id directly, clear the old id's
       // context cache to prevent stale context resurrection when the old id is reused.
       const oldRecord = getCachedProjectRecordByFilePath(file.path);
       if (oldRecord && oldRecord.project.id !== record.project.id) {

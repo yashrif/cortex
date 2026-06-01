@@ -4,15 +4,15 @@ import { Root } from "react-dom/client";
 import { Button } from "@/components/ui/button";
 import { createPluginRoot } from "@/utils/react/createPluginRoot";
 import {
-  DEFAULT_COPILOT_PLUS_CHAT_MODEL,
-  DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL,
-  DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL_KEY,
+  DEFAULT_CORTEX_PLUS_CHAT_MODEL,
+  DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL,
+  DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL_KEY,
   applyPlusSettings,
 } from "@/plusUtils";
 import { getSettings } from "@/settings/model";
 import { TriangleAlert } from "lucide-react";
 
-function CopilotPlusWelcomeModalContent({
+function CortexPlusWelcomeModalContent({
   onConfirm,
   onCancel,
 }: {
@@ -24,27 +24,27 @@ function CopilotPlusWelcomeModalContent({
     <div className="tw-flex tw-flex-col tw-gap-4">
       <div>
         <p>
-          Thanks for purchasing <b>Copilot Plus</b>! You have unlocked the full power of Copilot,
+          Thanks for purchasing <b>Cortex Plus</b>! You have unlocked the full power of Cortex,
           featuring chat context, PDF and image support, exclusive chat and embedding models, and
           much more!
         </p>
         <p>
-          Would you like to apply the Copilot Plus settings now? You can always change this later in
+          Would you like to apply the Cortex Plus settings now? You can always change this later in
           Settings.
         </p>
         <ul className="tw-pl-4">
           <li>
-            Default mode: <b className="tw-text-accent">Copilot Plus</b>
+            Default mode: <b className="tw-text-accent">Cortex Plus</b>
           </li>
           <li>
-            Chat model: <b className="tw-text-accent">{DEFAULT_COPILOT_PLUS_CHAT_MODEL}</b>
+            Chat model: <b className="tw-text-accent">{DEFAULT_CORTEX_PLUS_CHAT_MODEL}</b>
           </li>
           <li>
             <div>
               Embedding model:{" "}
-              <b className="tw-text-accent">{DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL}</b>
+              <b className="tw-text-accent">{DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL}</b>
             </div>
-            {settings.embeddingModelKey !== DEFAULT_COPILOT_PLUS_EMBEDDING_MODEL_KEY && (
+            {settings.embeddingModelKey !== DEFAULT_CORTEX_PLUS_EMBEDDING_MODEL_KEY && (
               <div className="tw-flex tw-items-center tw-gap-1 tw-text-sm tw-text-warning">
                 <TriangleAlert className="tw-size-4" /> It will rebuild your embeddings for the
                 entire vault
@@ -65,14 +65,14 @@ function CopilotPlusWelcomeModalContent({
   );
 }
 
-export class CopilotPlusWelcomeModal extends Modal {
+export class CortexPlusWelcomeModal extends Modal {
   private root: Root;
 
   constructor(app: App) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
     // @ts-ignore
-    this.setTitle("Welcome to Copilot Plus 🚀");
+    this.setTitle("Welcome to Cortex Plus 🚀");
   }
 
   onOpen() {
@@ -89,7 +89,7 @@ export class CopilotPlusWelcomeModal extends Modal {
     };
 
     this.root.render(
-      <CopilotPlusWelcomeModalContent onConfirm={handleConfirm} onCancel={handleCancel} />
+      <CortexPlusWelcomeModalContent onConfirm={handleConfirm} onCancel={handleCancel} />
     );
   }
 

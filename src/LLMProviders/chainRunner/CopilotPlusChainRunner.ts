@@ -75,7 +75,7 @@ type ToolCallWithExecutor = {
 
 export class CopilotPlusChainRunner extends BaseChainRunner {
   /**
-   * Get available tools for Copilot Plus chain.
+   * Get available tools for Cortex Plus chain.
    * Uses a minimal set of utility tools: time tools and file tree.
    * Search tools are handled via @commands.
    */

@@ -13,7 +13,7 @@ import { Root } from "react-dom/client";
 import { updateDynamicStyleClass, clearDynamicStyleClass } from "@/utils/dom/dynamicStyleManager";
 import { QuickAskPanel } from "./QuickAskPanel";
 import { createPluginRoot } from "@/utils/react/createPluginRoot";
-import type CopilotPlugin from "@/main";
+import type CortexPlugin from "@/main";
 import type { ReplaceGuard } from "@/editor/replaceGuard";
 import type { ResizeDirection } from "@/hooks/use-resizable";
 
@@ -35,7 +35,7 @@ interface AnchorRect {
 }
 
 interface QuickAskOverlayOptions {
-  plugin: CopilotPlugin;
+  plugin: CortexPlugin;
   editor: Editor;
   view: EditorView;
   selectedText: string;
@@ -169,7 +169,7 @@ export class QuickAskOverlay {
       const host = overlayRoot.parentElement;
       overlayRoot.remove();
       QuickAskOverlay.overlayRoot = null;
-      host?.classList.remove("copilot-quick-ask-overlay-host");
+      host?.classList.remove("cortex-quick-ask-overlay-host");
     }
     this.bottomAnchorPos = null;
     this.topAnchorPos = null;
@@ -278,7 +278,7 @@ export class QuickAskOverlay {
       const handleAnimationEnd = (event: AnimationEvent) => {
         if (
           event.target !== this.overlayContainer ||
-          event.animationName !== "copilot-quick-ask-fade-out"
+          event.animationName !== "cortex-quick-ask-fade-out"
         ) {
           return;
         }
@@ -306,7 +306,7 @@ export class QuickAskOverlay {
 
   private static getOverlayRoot(host: HTMLElement): HTMLElement {
     if (QuickAskOverlay.overlayRoot && QuickAskOverlay.overlayRoot.parentElement !== host) {
-      QuickAskOverlay.overlayRoot.parentElement?.classList.remove("copilot-quick-ask-overlay-host");
+      QuickAskOverlay.overlayRoot.parentElement?.classList.remove("cortex-quick-ask-overlay-host");
       QuickAskOverlay.overlayRoot.remove();
       QuickAskOverlay.overlayRoot = null;
     }
@@ -315,9 +315,9 @@ export class QuickAskOverlay {
 
     const doc = host.doc;
     const root = doc.createElement("div");
-    root.className = "copilot-quick-ask-overlay-root";
+    root.className = "cortex-quick-ask-overlay-root";
     host.appendChild(root);
-    host.classList.add("copilot-quick-ask-overlay-host");
+    host.classList.add("cortex-quick-ask-overlay-host");
     QuickAskOverlay.overlayRoot = root;
     return root;
   }
@@ -335,7 +335,7 @@ export class QuickAskOverlay {
 
     const overlayRoot = QuickAskOverlay.getOverlayRoot(overlayHost);
     const overlayContainer = doc.createElement("div");
-    overlayContainer.className = "copilot-quick-ask-overlay";
+    overlayContainer.className = "cortex-quick-ask-overlay";
     overlayRoot.appendChild(overlayContainer);
     this.overlayContainer = overlayContainer;
 
@@ -607,7 +607,7 @@ export class QuickAskOverlay {
     const minTop = visibleTop + PANEL_MARGIN;
 
     // First pass: apply width/left so we can measure actual height
-    updateDynamicStyleClass(this.overlayContainer, "copilot-quick-ask-overlay-pos", {
+    updateDynamicStyleClass(this.overlayContainer, "cortex-quick-ask-overlay-pos", {
       width: panelWidth,
       ...(typeof panelHeight === "number" ? { height: panelHeight } : {}),
       left: Math.round(left),
@@ -633,7 +633,7 @@ export class QuickAskOverlay {
     );
 
     // Final pass: apply the correct top position
-    updateDynamicStyleClass(this.overlayContainer, "copilot-quick-ask-overlay-pos", {
+    updateDynamicStyleClass(this.overlayContainer, "cortex-quick-ask-overlay-pos", {
       width: panelWidth,
       ...(typeof panelHeight === "number" ? { height: panelHeight } : {}),
       left: Math.round(left),
@@ -869,7 +869,7 @@ export class QuickAskOverlay {
       this.resizeSize?.width ?? Math.max(minWidth, Math.min(defaultWidth, maxWidth));
     const panelHeight = this.resizeSize?.height;
 
-    updateDynamicStyleClass(this.overlayContainer, "copilot-quick-ask-overlay-pos", {
+    updateDynamicStyleClass(this.overlayContainer, "cortex-quick-ask-overlay-pos", {
       width: panelWidth,
       ...(panelHeight ? { height: panelHeight } : {}),
       left: Math.round(this.dragPosition.x - hostRect.left),

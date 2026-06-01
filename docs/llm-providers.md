@@ -1,12 +1,12 @@
 # LLM Providers
 
-Copilot includes 16 built-in AI providers, and you can add an unlimited number of additional models as long as they are OpenAI-compatible. You can use cloud-based services that require API keys, or run models locally on your own machine. This guide explains how to set up each provider.
+Cortex includes 16 built-in AI providers, and you can add an unlimited number of additional models as long as they are OpenAI-compatible. You can use cloud-based services that require API keys, or run models locally on your own machine. This guide explains how to set up each provider.
 
 ---
 
 ## How to Set API Keys
 
-1. Go to **Settings → Copilot → Basic**
+1. Go to **Settings → Cortex → Basic**
 2. Click **Set Keys** to open the API key dialog
 3. Enter your key for the provider you want to use
 4. Click Save
@@ -147,7 +147,7 @@ Runs open-source models locally on your machine.
 
 - **Default port**: 11434
 - **URL**: `http://localhost:11434/v1/`
-- **Setup**: Install Ollama (ollama.ai), pull a model, then add it in Copilot's Model settings
+- **Setup**: Install Ollama (ollama.ai), pull a model, then add it in Cortex's Model settings
 - **No API key required**
 
 ### LM Studio
@@ -156,7 +156,7 @@ A desktop app for running local models with a GUI.
 
 - **Default port**: 1234
 - **URL**: `http://localhost:1234/v1`
-- **Setup**: Install LM Studio, load a model, go to the Developer tab, **enable CORS** (required), click "Start Server", then add the model in Copilot
+- **Setup**: Install LM Studio, load a model, go to the Developer tab, **enable CORS** (required), click "Start Server", then add the model in Cortex
 - **No API key required**
 
 ### 3rd Party (OpenAI-Format)
@@ -166,7 +166,7 @@ For any API that follows the OpenAI API format. Useful for custom deployments, p
 - **Requires**: Base URL and optionally an API key
 - **Use when**: Your provider isn't in the list but speaks OpenAI-format
 
-> **CORS Warning**: Some third-party providers (e.g., Perplexity) don't support CORS, which causes Copilot to fail with a CORS error. When adding a custom model for such a provider, enable the **CORS** toggle in the custom model form. Note: streaming is not available in CORS mode.
+> **CORS Warning**: Some third-party providers (e.g., Perplexity) don't support CORS, which causes Cortex to fail with a CORS error. When adding a custom model for such a provider, enable the **CORS** toggle in the custom model form. Note: streaming is not available in CORS mode.
 
 ---
 

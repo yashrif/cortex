@@ -7,11 +7,11 @@ import {
 import { CustomCommand } from "@/commands/type";
 import { CustomError } from "@/error";
 import {
-  COPILOT_COMMAND_CONTEXT_MENU_ENABLED,
-  COPILOT_COMMAND_CONTEXT_MENU_ORDER,
-  COPILOT_COMMAND_LAST_USED,
-  COPILOT_COMMAND_MODEL_KEY,
-  COPILOT_COMMAND_SLASH_ENABLED,
+  CORTEX_COMMAND_CONTEXT_MENU_ENABLED,
+  CORTEX_COMMAND_CONTEXT_MENU_ORDER,
+  CORTEX_COMMAND_LAST_USED,
+  CORTEX_COMMAND_MODEL_KEY,
+  CORTEX_COMMAND_SLASH_ENABLED,
 } from "@/commands/constants";
 import {
   addPendingFileWrite,
@@ -69,11 +69,11 @@ export class CustomCommandManager {
       await app.fileManager.processFrontMatter(
         commandFile,
         (frontmatter: Record<string, unknown>) => {
-          frontmatter[COPILOT_COMMAND_CONTEXT_MENU_ENABLED] = command.showInContextMenu;
-          frontmatter[COPILOT_COMMAND_SLASH_ENABLED] = command.showInSlashMenu;
-          frontmatter[COPILOT_COMMAND_CONTEXT_MENU_ORDER] = command.order;
-          frontmatter[COPILOT_COMMAND_MODEL_KEY] = command.modelKey;
-          frontmatter[COPILOT_COMMAND_LAST_USED] = command.lastUsedMs;
+          frontmatter[CORTEX_COMMAND_CONTEXT_MENU_ENABLED] = command.showInContextMenu;
+          frontmatter[CORTEX_COMMAND_SLASH_ENABLED] = command.showInSlashMenu;
+          frontmatter[CORTEX_COMMAND_CONTEXT_MENU_ORDER] = command.order;
+          frontmatter[CORTEX_COMMAND_MODEL_KEY] = command.modelKey;
+          frontmatter[CORTEX_COMMAND_LAST_USED] = command.lastUsedMs;
         }
       );
 
@@ -132,11 +132,11 @@ export class CustomCommandManager {
         await app.fileManager.processFrontMatter(
           commandFile,
           (frontmatter: Record<string, unknown>) => {
-            frontmatter[COPILOT_COMMAND_CONTEXT_MENU_ENABLED] = command.showInContextMenu;
-            frontmatter[COPILOT_COMMAND_SLASH_ENABLED] = command.showInSlashMenu;
-            frontmatter[COPILOT_COMMAND_CONTEXT_MENU_ORDER] = command.order;
-            frontmatter[COPILOT_COMMAND_MODEL_KEY] = command.modelKey;
-            frontmatter[COPILOT_COMMAND_LAST_USED] = command.lastUsedMs;
+            frontmatter[CORTEX_COMMAND_CONTEXT_MENU_ENABLED] = command.showInContextMenu;
+            frontmatter[CORTEX_COMMAND_SLASH_ENABLED] = command.showInSlashMenu;
+            frontmatter[CORTEX_COMMAND_CONTEXT_MENU_ORDER] = command.order;
+            frontmatter[CORTEX_COMMAND_MODEL_KEY] = command.modelKey;
+            frontmatter[CORTEX_COMMAND_LAST_USED] = command.lastUsedMs;
           }
         );
       }

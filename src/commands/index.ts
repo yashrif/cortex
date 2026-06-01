@@ -22,10 +22,10 @@ import { ApplyCustomCommandModal } from "@/components/modals/ApplyCustomCommandM
 import { YoutubeTranscriptModal } from "@/components/modals/YoutubeTranscriptModal";
 import { checkIsPlusUser } from "@/plusUtils";
 // Debug modals removed with search v3
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { shouldUseMiyo } from "@/miyo/miyoUtils";
 import { getAllQAMarkdownContent } from "@/search/searchUtils";
-import { CopilotSettings } from "@/settings/model";
+import { CortexSettings } from "@/settings/model";
 import { NoteSelectedTextContext, WebSelectedTextContext } from "@/types/message";
 import { ensureFolderExists, isSourceModeOn } from "@/utils";
 import { Editor, MarkdownView, Notice, TFile } from "obsidian";
@@ -36,7 +36,7 @@ import { setSelectedTextContexts } from "@/aiParams";
 /**
  * Add a command to the plugin. Supports async callbacks; errors are logged.
  */
-function addCommand(plugin: CopilotPlugin, id: CommandId, callback: () => void | Promise<void>) {
+function addCommand(plugin: CortexPlugin, id: CommandId, callback: () => void | Promise<void>) {
   plugin.addCommand({
     id,
     name: COMMAND_NAMES[id],
@@ -54,7 +54,7 @@ function addCommand(plugin: CopilotPlugin, id: CommandId, callback: () => void |
  * Add an editor command to the plugin. Supports async callbacks; errors are logged.
  */
 function addEditorCommand(
-  plugin: CopilotPlugin,
+  plugin: CortexPlugin,
   id: CommandId,
   callback: (editor: Editor) => void | Promise<void>
 ) {
@@ -75,7 +75,7 @@ function addEditorCommand(
  * Add a check command to the plugin.
  */
 function addCheckCommand(
-  plugin: CopilotPlugin,
+  plugin: CortexPlugin,
   id: CommandId,
   callback: (checking: boolean) => boolean | void
 ) {
@@ -88,9 +88,9 @@ function addCheckCommand(
 }
 
 export function registerCommands(
-  plugin: CopilotPlugin,
-  prev: CopilotSettings | undefined,
-  next: CopilotSettings
+  plugin: CortexPlugin,
+  prev: CortexSettings | undefined,
+  next: CortexSettings
 ) {
   addEditorCommand(plugin, COMMAND_IDS.COUNT_WORD_AND_TOKENS_SELECTION, async (editor: Editor) => {
     const selectedText = editor.getSelection();
@@ -114,11 +114,11 @@ export function registerCommands(
     }
   });
 
-  addCommand(plugin, COMMAND_IDS.TOGGLE_COPILOT_CHAT_WINDOW, () => {
+  addCommand(plugin, COMMAND_IDS.TOGGLE_CORTEX_CHAT_WINDOW, () => {
     plugin.toggleView();
   });
 
-  addCommand(plugin, COMMAND_IDS.OPEN_COPILOT_CHAT_WINDOW, async () => {
+  addCommand(plugin, COMMAND_IDS.OPEN_CORTEX_CHAT_WINDOW, async () => {
     await plugin.activateView();
   });
 
@@ -188,7 +188,7 @@ export function registerCommands(
     return true;
   });
 
-  addCommand(plugin, COMMAND_IDS.CLEAR_LOCAL_COPILOT_INDEX, async () => {
+  addCommand(plugin, COMMAND_IDS.CLEAR_LOCAL_CORTEX_INDEX, async () => {
     const { getSettings } = await import("@/settings/model");
     const settings = getSettings();
     const isMiyoEnabled = shouldUseMiyo(settings);
@@ -199,7 +199,7 @@ export function registerCommands(
       return;
     }
     const clearMessage =
-      "This will permanently delete all document indexes in Copilot. This action cannot be undone.\n\nAre you sure you want to proceed?";
+      "This will permanently delete all document indexes in Cortex. This action cannot be undone.\n\nAre you sure you want to proceed?";
     const confirmed = await new Promise<boolean>((resolve) => {
       new ConfirmModal(
         plugin.app,
@@ -215,14 +215,14 @@ export function registerCommands(
     try {
       const VectorStoreManager = (await import("@/search/vectorStoreManager")).default;
       await VectorStoreManager.getInstance().clearIndex();
-      new Notice("Cleared local Copilot semantic index.");
+      new Notice("Cleared local Cortex semantic index.");
     } catch (err) {
       logError("Error clearing semantic index:", err);
       new Notice("Failed to clear semantic index.");
     }
   });
 
-  addCommand(plugin, COMMAND_IDS.GARBAGE_COLLECT_COPILOT_INDEX, async () => {
+  addCommand(plugin, COMMAND_IDS.GARBAGE_COLLECT_CORTEX_INDEX, async () => {
     try {
       const { getSettings } = await import("@/settings/model");
       if (shouldUseMiyo(getSettings())) {
@@ -242,7 +242,7 @@ export function registerCommands(
 
   // Removed legacy build-only command; use refresh and force reindex commands instead
 
-  addCommand(plugin, COMMAND_IDS.INDEX_VAULT_TO_COPILOT_INDEX, async () => {
+  addCommand(plugin, COMMAND_IDS.INDEX_VAULT_TO_CORTEX_INDEX, async () => {
     try {
       const { getSettings } = await import("@/settings/model");
       const settings = getSettings();
@@ -268,7 +268,7 @@ export function registerCommands(
     }
   });
 
-  addCommand(plugin, COMMAND_IDS.FORCE_REINDEX_VAULT_TO_COPILOT_INDEX, async () => {
+  addCommand(plugin, COMMAND_IDS.FORCE_REINDEX_VAULT_TO_CORTEX_INDEX, async () => {
     const confirmed = await new Promise<boolean>((resolve) => {
       new ConfirmModal(
         plugin.app,
@@ -306,7 +306,7 @@ export function registerCommands(
     }
   });
 
-  addCommand(plugin, COMMAND_IDS.LOAD_COPILOT_CHAT_CONVERSATION, async () => {
+  addCommand(plugin, COMMAND_IDS.LOAD_CORTEX_CHAT_CONVERSATION, async () => {
     await plugin.loadCopilotChatHistory();
   });
 
@@ -343,7 +343,7 @@ export function registerCommands(
 
       // Create content for the file
       const content = [
-        "# Copilot Files Status",
+        "# Cortex Files Status",
         `- Indexed files: ${indexedFiles.size}`,
         `- Unindexed files: ${unindexedFiles.size}`,
         `- Empty files: ${emptyFiles.size}`,
@@ -379,8 +379,8 @@ export function registerCommands(
       ].join("\n");
 
       // Create or update the file in the vault
-      const fileName = `Copilot-Indexed-Files-${new Date().toLocaleDateString().replace(/\//g, "-")}.md`;
-      const folderPath = "copilot";
+      const fileName = `Cortex-Indexed-Files-${new Date().toLocaleDateString().replace(/\//g, "-")}.md`;
+      const folderPath = "cortex";
       const filePath = `${folderPath}/${fileName}`;
 
       // Ensure destination folder exists (supports mobile and nested)
@@ -405,7 +405,7 @@ export function registerCommands(
     }
   });
 
-  addCommand(plugin, COMMAND_IDS.INSPECT_COPILOT_INDEX_BY_NOTE_PATHS, async () => {
+  addCommand(plugin, COMMAND_IDS.INSPECT_CORTEX_INDEX_BY_NOTE_PATHS, async () => {
     try {
       const activeFile = plugin.app.workspace.getActiveFile();
       if (!activeFile) {
@@ -454,8 +454,8 @@ export function registerCommands(
       ].join("\n");
 
       // Create the debug file
-      const fileName = `Copilot-Embedding-Debug-${activeFile.basename.replace(/[\\/:*?"<>|]/g, "_")}.md`;
-      const folderPath = "copilot";
+      const fileName = `Cortex-Embedding-Debug-${activeFile.basename.replace(/[\\/:*?"<>|]/g, "_")}.md`;
+      const folderPath = "cortex";
       const filePath = `${folderPath}/${fileName}`;
 
       await ensureFolderExists(folderPath);
@@ -478,8 +478,8 @@ export function registerCommands(
     }
   });
 
-  // Add clear Copilot cache command
-  addCommand(plugin, COMMAND_IDS.CLEAR_COPILOT_CACHE, async () => {
+  // Add clear Cortex cache command
+  addCommand(plugin, COMMAND_IDS.CLEAR_CORTEX_CACHE, async () => {
     try {
       await plugin.fileParserManager.clearPDFCache();
 
@@ -490,32 +490,32 @@ export function registerCommands(
       const fileCache = FileCache.getInstance<string>();
       await fileCache.clear();
 
-      new Notice("All Copilot caches cleared successfully");
+      new Notice("All Cortex caches cleared successfully");
     } catch (error) {
-      logError("Error clearing Copilot caches:", error);
-      new Notice("Failed to clear Copilot caches");
+      logError("Error clearing Cortex caches:", error);
+      new Notice("Failed to clear Cortex caches");
     }
   });
 
-  // Create Copilot log file
+  // Create Cortex log file
   addCommand(plugin, COMMAND_IDS.OPEN_LOG_FILE, async () => {
     try {
       await flushRecordedPromptPayloadToLog();
       await logFileManager.openLogFile();
     } catch (error) {
-      logError("Error creating Copilot log file:", error);
-      new Notice("Failed to create Copilot log file.");
+      logError("Error creating Cortex log file:", error);
+      new Notice("Failed to create Cortex log file.");
     }
   });
 
-  // Clear Copilot log file (delete on disk and clear in-memory buffer)
+  // Clear Cortex log file (delete on disk and clear in-memory buffer)
   addCommand(plugin, COMMAND_IDS.CLEAR_LOG_FILE, async () => {
     try {
       await logFileManager.clear();
-      new Notice("Copilot log cleared.");
+      new Notice("Cortex log cleared.");
     } catch (error) {
-      logError("Error clearing Copilot log file:", error);
-      new Notice("Failed to clear Copilot log file.");
+      logError("Error clearing Cortex log file:", error);
+      new Notice("Failed to clear Cortex log file.");
     }
   });
 
@@ -632,11 +632,11 @@ export function registerCommands(
     modal.open();
   });
 
-  // Add command to download YouTube script (Copilot Plus only)
+  // Add command to download YouTube script (Cortex Plus only)
   addCommand(plugin, COMMAND_IDS.DOWNLOAD_YOUTUBE_SCRIPT, async () => {
     const isPlusUser = await checkIsPlusUser();
     if (!isPlusUser) {
-      new Notice("Download YouTube Script (plus) is a Copilot Plus feature");
+      new Notice("Download YouTube Script (plus) is a Cortex Plus feature");
       return;
     }
 

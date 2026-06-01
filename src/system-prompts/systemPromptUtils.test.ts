@@ -9,7 +9,7 @@ import {
 import { UserSystemPrompt } from "@/system-prompts/type";
 import { TFile, TAbstractFile, normalizePath } from "obsidian";
 import * as settingsModel from "@/settings/model";
-import type { CopilotSettings } from "@/settings/model";
+import type { CortexSettings } from "@/settings/model";
 import { mockTFile } from "@/__tests__/mockObsidian";
 
 // Mock Obsidian
@@ -119,7 +119,7 @@ describe("getSystemPromptsFolder", () => {
   it("returns the system prompts folder path from settings", () => {
     jest.spyOn(settingsModel, "getSettings").mockReturnValue({
       userSystemPromptsFolder: "CustomFolder/SystemPrompts",
-    } as CopilotSettings);
+    } as CortexSettings);
 
     const result = getSystemPromptsFolder();
     expect(result).toBe("CustomFolder/SystemPrompts");
@@ -128,7 +128,7 @@ describe("getSystemPromptsFolder", () => {
   it("normalizes the path", () => {
     jest.spyOn(settingsModel, "getSettings").mockReturnValue({
       userSystemPromptsFolder: "SystemPrompts",
-    } as CopilotSettings);
+    } as CortexSettings);
 
     const result = getSystemPromptsFolder();
     expect(normalizePath).toHaveBeenCalled();
@@ -140,7 +140,7 @@ describe("getPromptFilePath", () => {
   beforeEach(() => {
     jest.spyOn(settingsModel, "getSettings").mockReturnValue({
       userSystemPromptsFolder: "SystemPrompts",
-    } as CopilotSettings);
+    } as CortexSettings);
   });
 
   it("returns correct file path with .md extension", () => {
@@ -156,7 +156,7 @@ describe("isSystemPromptFile", () => {
   beforeEach(() => {
     jest.spyOn(settingsModel, "getSettings").mockReturnValue({
       userSystemPromptsFolder: "SystemPrompts",
-    } as CopilotSettings);
+    } as CortexSettings);
   });
 
   it("returns true for valid system prompt file", () => {
@@ -226,7 +226,7 @@ describe("isSystemPromptFile", () => {
   it("works with custom userSystemPromptsFolder setting", () => {
     jest.spyOn(settingsModel, "getSettings").mockReturnValue({
       userSystemPromptsFolder: "CustomFolder/MyPrompts",
-    } as CopilotSettings);
+    } as CortexSettings);
 
     const validFile = mockTFile({
       path: "CustomFolder/MyPrompts/Test.md",
@@ -274,18 +274,18 @@ describe("parseSystemPromptFile", () => {
 
   it("parses a file with frontmatter and content", async () => {
     const rawContent = `---
-copilot-system-prompt-created: 1234567890
-copilot-system-prompt-modified: 1234567891
-copilot-system-prompt-last-used: 1234567892
+cortex-system-prompt-created: 1234567890
+cortex-system-prompt-modified: 1234567891
+cortex-system-prompt-last-used: 1234567892
 ---
 This is the prompt content.`;
 
     (app.vault.read as jest.Mock).mockResolvedValue(rawContent);
     (app.metadataCache.getFileCache as jest.Mock).mockReturnValue({
       frontmatter: {
-        "copilot-system-prompt-created": 1234567890,
-        "copilot-system-prompt-modified": 1234567891,
-        "copilot-system-prompt-last-used": 1234567892,
+        "cortex-system-prompt-created": 1234567890,
+        "cortex-system-prompt-modified": 1234567891,
+        "cortex-system-prompt-last-used": 1234567892,
       },
     });
 
@@ -319,14 +319,14 @@ This is the prompt content.`;
 
   it("uses default values for missing frontmatter fields", async () => {
     const rawContent = `---
-copilot-system-prompt-created: 1234567890
+cortex-system-prompt-created: 1234567890
 ---
 Content here.`;
 
     (app.vault.read as jest.Mock).mockResolvedValue(rawContent);
     (app.metadataCache.getFileCache as jest.Mock).mockReturnValue({
       frontmatter: {
-        "copilot-system-prompt-created": 1234567890,
+        "cortex-system-prompt-created": 1234567890,
       },
     });
 
@@ -343,7 +343,7 @@ Content here.`;
 
   it("strips frontmatter from content", async () => {
     const rawContent = `---
-copilot-system-prompt-created: 1234567890
+cortex-system-prompt-created: 1234567890
 ---
 Line 1
 Line 2`;
@@ -351,7 +351,7 @@ Line 2`;
     (app.vault.read as jest.Mock).mockResolvedValue(rawContent);
     (app.metadataCache.getFileCache as jest.Mock).mockReturnValue({
       frontmatter: {
-        "copilot-system-prompt-created": 1234567890,
+        "cortex-system-prompt-created": 1234567890,
       },
     });
 
@@ -363,14 +363,14 @@ Line 2`;
 
   it("handles content with --- in the middle", async () => {
     const rawContent = `---
-copilot-system-prompt-created: 1234567890
+cortex-system-prompt-created: 1234567890
 ---
 Content with --- separator in the middle.`;
 
     (app.vault.read as jest.Mock).mockResolvedValue(rawContent);
     (app.metadataCache.getFileCache as jest.Mock).mockReturnValue({
       frontmatter: {
-        "copilot-system-prompt-created": 1234567890,
+        "cortex-system-prompt-created": 1234567890,
       },
     });
 

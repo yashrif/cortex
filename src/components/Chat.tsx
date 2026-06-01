@@ -14,6 +14,7 @@ import { resetSessionSystemPromptSettings } from "@/system-prompts";
 import { ChainType } from "@/chainType";
 import { useProjectContextStatus } from "@/hooks/useProjectContextStatus";
 import { logInfo, logError } from "@/logger";
+import { isWebSelectedTextContext } from "@/types/message";
 import type { WebTabContext } from "@/types/message";
 
 import { ChatControls, reloadCurrentProject } from "@/components/chat-components/ChatControls";
@@ -39,7 +40,7 @@ import { getAIResponse } from "@/langchainStream";
 import ChainManager from "@/LLMProviders/chainManager";
 import { clearRecordedPromptPayload } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
 import { logFileManager } from "@/logFileManager";
-import CopilotPlugin from "@/main";
+import CortexPlugin from "@/main";
 import { useIsPlusUser } from "@/plusUtils";
 import { ProjectFileManager } from "@/projects/ProjectFileManager";
 import { useProjects } from "@/projects/state";
@@ -64,7 +65,7 @@ interface ChatProps {
   onSaveChat: (saveAsNote: () => Promise<void>) => void;
   updateUserMessageHistory: (newMessage: string) => void;
   fileParserManager: FileParserManager;
-  plugin: CopilotPlugin;
+  plugin: CortexPlugin;
   mode?: ChatMode;
   chatUIState: ChatUIState;
 }
@@ -697,7 +698,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
     safeSet.setCurrentAiMessage("");
     setContextNotes([]);
     // Capture web selection URL before clearing for suppression
-    const webSelectionUrl = selectedTextContexts.find((ctx) => ctx.sourceType === "web")?.url;
+    const webSelectionUrl = selectedTextContexts.find(isWebSelectedTextContext)?.url;
     clearSelectedTextContexts();
     // Clear chat selection highlight
     plugin.chatSelectionHighlightController.clearForNewChat();
